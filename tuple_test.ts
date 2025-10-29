@@ -6,7 +6,7 @@ import {
   assertFalse,
   assertThrows,
 } from "@std/assert";
-import { EPSILON, Point, Tuple, Vector } from "./main.ts";
+import { EPSILON, Point, Tuple, Vector } from "./tuple.ts";
 
 const sqrt = Math.sqrt;
 
