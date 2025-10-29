@@ -26,14 +26,27 @@ export class Tuple extends Float32Array {
   get is_a_vector(): boolean {
     return Math.round(this[3]) == 0;
   }
+  get magnitude(): number {
+    return Math.sqrt(
+      this.x ** 2 +
+        this.y ** 2 +
+        this.z ** 2 +
+        this.w ** 2,
+    );
+  }
 
-  tupleEqual(that: Tuple): boolean {
+  tupleEquals(that: Tuple): boolean {
     return (
       floatEqual(this.x, that.x) &&
       floatEqual(this.y, that.y) &&
       floatEqual(this.z, that.z) &&
       floatEqual(this.w, that.w)
     );
+  }
+
+  dot(that: Tuple): number {
+    return (this.x * that.x + this.y * that.y + this.z * that.z +
+      this.w * that.w);
   }
 
   plus(that: Tuple): Tuple {
@@ -74,6 +87,11 @@ export class Tuple extends Float32Array {
 
   div(scalar: number): Tuple {
     return this.times(1 / scalar);
+  }
+
+  normalize(): Tuple {
+    const m = this.magnitude;
+    return new Tuple(this.x / m, this.y / m, this.z / m, this.w / m);
   }
 }
 
