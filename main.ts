@@ -62,6 +62,19 @@ export class Tuple extends Float32Array {
       -this.w,
     );
   }
+
+  times(scalar: number): Tuple {
+    return new Tuple(
+      this.x * scalar,
+      this.y * scalar,
+      this.z * scalar,
+      this.w * scalar,
+    );
+  }
+
+  div(scalar: number): Tuple {
+    return this.times(1 / scalar);
+  }
 }
 
 export class Point extends Tuple {

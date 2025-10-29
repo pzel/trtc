@@ -188,4 +188,24 @@ describe("tuples.feature", () => {
     //when
     assertThrows(() => p.negate(), RangeError);
   });
+
+  it("multiplies a tuple by a scalar", () => {
+    //given
+    const v = new Tuple(4, 5, -6, 0);
+    //when
+    const vs = v.times(2.0);
+
+    //then
+    assert(vs.tupleEqual(new Tuple(8, 10, -12, 0)));
+  });
+
+  it("divides a tuple by a scalar", () => {
+    //given
+    const v = new Tuple(4, 5, -6, 1);
+    //when
+    const vs = v.div(2.0);
+
+    //then
+    assert(vs.tupleEqual(new Tuple(2, 2.5, -3, 0.5)));
+  });
 });
