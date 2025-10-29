@@ -242,4 +242,17 @@ describe("tuples.feature", () => {
     //then
     assertEquals(t1.dot(t2), 33);
   });
+
+  it("cross product of two vectors", () => {
+    //given
+    const a = new Vector(1, 2, 3);
+    const b = new Vector(2, 3, 4);
+    //when
+    const ab = a.cross(b);
+    const ba = b.cross(a);
+
+    //then
+    assert(ab.tupleEquals(new Vector(-1, 2, -1)));
+    assert(ba.tupleEquals(new Vector(1, -2, 1)));
+  });
 });

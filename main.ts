@@ -105,6 +105,13 @@ export class Vector extends Tuple {
   constructor(x: number, y: number, z: number) {
     super(x, y, z, 0.0);
   }
+  cross(that: Vector): Vector {
+    return new Vector(
+      this.y * that.z - this.z * that.y,
+      this.z * that.x - this.x * that.z,
+      this.x * that.y - this.y * that.x,
+    );
+  }
 }
 
 function floatEqual(a: number, b: number): boolean {
