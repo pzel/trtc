@@ -93,6 +93,10 @@ export class Tuple extends Float32Array {
     const m = this.magnitude;
     return new Tuple(this.x / m, this.y / m, this.z / m, this.w / m);
   }
+
+  cross(_: Tuple) : Tuple {
+    throw new RangeError("N/A");
+  }
 }
 
 export class Point extends Tuple {
@@ -105,7 +109,7 @@ export class Vector extends Tuple {
   constructor(x: number, y: number, z: number) {
     super(x, y, z, 0.0);
   }
-  cross(that: Vector): Vector {
+  override cross(that: Vector): Vector {
     return new Vector(
       this.y * that.z - this.z * that.y,
       this.z * that.x - this.x * that.z,
@@ -117,8 +121,3 @@ export class Vector extends Tuple {
 function floatEqual(a: number, b: number): boolean {
   return Math.abs(a - b) < EPSILON;
 }
-
-// // Learn more at https://docs.deno.com/runtime/manual/examples/module_metadata#concepts
-// if (import.meta.main) {
-//   console.log("Add 2 + 3 =", add(2, 3));
-// }
