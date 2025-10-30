@@ -94,7 +94,7 @@ export class Tuple extends Float32Array {
     return new Tuple(this.x / m, this.y / m, this.z / m, this.w / m);
   }
 
-  cross(_: Tuple) : Tuple {
+  cross(_: Tuple): Tuple {
     throw new RangeError("N/A");
   }
 }
@@ -115,6 +115,21 @@ export class Vector extends Tuple {
       this.z * that.x - this.x * that.z,
       this.x * that.y - this.y * that.x,
     );
+  }
+}
+
+export class Color extends Tuple {
+  constructor(x: number, y: number, z: number) {
+    super(x, y, z, 0.0);
+  }
+  get red(): number {
+    return this.x;
+  }
+  get green(): number {
+    return this.y;
+  }
+  get blue(): number {
+    return this.z;
   }
 }
 

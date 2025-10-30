@@ -6,7 +6,7 @@ import {
   assertFalse,
   assertThrows,
 } from "@std/assert";
-import { EPSILON, Point, Tuple, Vector } from "./tuple.ts";
+import { Color, EPSILON, Point, Tuple, Vector } from "./tuple.ts";
 
 const sqrt = Math.sqrt;
 
@@ -254,5 +254,12 @@ describe("tuples.feature", () => {
     //then
     assert(ab.tupleEquals(new Vector(-1, 2, -1)));
     assert(ba.tupleEquals(new Vector(1, -2, 1)));
+  });
+
+  it("colors are (red, green, blue) tuples", () => {
+    const c = new Color(-0.5, 0.4, 1.7);
+    assertAlmostEquals(c.red, -0.5, EPSILON);
+    assertAlmostEquals(c.green, 0.4, EPSILON);
+    assertAlmostEquals(c.blue, 1.7, EPSILON);
   });
 });
