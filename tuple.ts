@@ -36,11 +36,13 @@ export class Tuple extends Float32Array {
   }
 
   tupleEquals(that: Tuple): boolean {
+    const eq = (a: number, b: number): boolean => Math.abs(a - b) < EPSILON;
+
     return (
-      floatEqual(this.x, that.x) &&
-      floatEqual(this.y, that.y) &&
-      floatEqual(this.z, that.z) &&
-      floatEqual(this.w, that.w)
+      eq(this.x, that.x) &&
+      eq(this.y, that.y) &&
+      eq(this.z, that.z) &&
+      eq(this.w, that.w)
     );
   }
 
@@ -121,35 +123,4 @@ export class Vector extends Tuple {
       this.x * that.y - this.y * that.x,
     );
   }
-}
-
-export class Color extends Tuple {
-  constructor(x: number, y: number, z: number) {
-    super(x, y, z, 0.0);
-  }
-  get red(): number {
-    return this.x;
-  }
-  get green(): number {
-    return this.y;
-  }
-  get blue(): number {
-    return this.z;
-  }
-  override times(that: number | Color): Color {
-    if (typeof that === "number") {
-      return super.times(that) as Color;
-    } else {
-      // Hadamard product
-      return new Color(
-        this.red * that.red,
-        this.green * that.green,
-        this.blue * that.blue,
-      );
-    }
-  }
-}
-
-function floatEqual(a: number, b: number): boolean {
-  return Math.abs(a - b) < EPSILON;
 }
