@@ -76,13 +76,18 @@ export class Tuple extends Float32Array {
     );
   }
 
-  times(scalar: number): Tuple {
-    return new Tuple(
-      this.x * scalar,
-      this.y * scalar,
-      this.z * scalar,
-      this.w * scalar,
-    );
+  times(that: number | Tuple): Tuple {
+    // by default only scalar multiplication is defined
+    if (typeof that === "number") {
+      return new Tuple(
+        this.x * that,
+        this.y * that,
+        this.z * that,
+        this.w * that,
+      );
+    } else {
+      throw new RangeError("N/A");
+    }
   }
 
   div(scalar: number): Tuple {
@@ -130,6 +135,18 @@ export class Color extends Tuple {
   }
   get blue(): number {
     return this.z;
+  }
+  override times(that: number | Color): Color {
+    if (typeof that === "number") {
+      return super.times(that) as Color;
+    } else {
+      // Hadamard product
+      return new Color(
+        this.red * that.red,
+        this.green * that.green,
+        this.blue * that.blue,
+      );
+    }
   }
 }
 
