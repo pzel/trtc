@@ -25,4 +25,25 @@ export class Canvas {
   setPixelAt(x: number, y: number, c: Color) {
     this.buf[x][y] = c;
   }
+
+  toPpm(): string {
+    const buf: Array<string> = [];
+    buf.push("P3");
+    buf.push(`${this.width} ${this.height}`);
+    buf.push("255");
+    for (let j = 0; j < this.height; j++) {
+      let row: Array<string> = [];
+      for (let i = 0; i < this.width; i++) {
+        const [r, g, b] = this.pixelAt(i, j).toRgb();
+        const nextEntry = `${r} ${g} ${b}`;
+        if (row.length * 12 + nextEntry.length > 70) {
+          buf.push(row.join(" "));
+          row = [];
+        }
+        row.push(nextEntry);
+      }
+      buf.push(row.join(" "));
+    }
+    return buf.join("\n") + "\n";
+  }
 }

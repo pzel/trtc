@@ -1,7 +1,7 @@
 .PHONY: test traj
 
 test:
-	deno test
+	deno test "$t"
 
 traj: trajectory.png
 	feh $^

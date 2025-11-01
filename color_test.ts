@@ -1,5 +1,5 @@
 import { describe, it } from "@std/testing/bdd";
-import { assert, assertAlmostEquals } from "@std/assert";
+import { assert, assertAlmostEquals, assertEquals } from "@std/assert";
 import { Color } from "./color.ts";
 import { EPSILON } from "./tuple.ts";
 
@@ -32,5 +32,15 @@ describe("Colors", () => {
     const c1 = new Color(1, 0.2, 0.4);
     const c2 = new Color(0.9, 1, 0.1);
     assert(c1.times(c2).tupleEquals(new Color(0.9, 0.2, 0.04)));
+  });
+
+  it("can project itself to a tuple of 0-255 values", () => {
+    const c = new Color(0, 0.5, 1);
+    assertEquals(c.toRgb(), [0, 128, 255]);
+  });
+
+  it("can clamps values to the 0-255 range", () => {
+    const c = new Color(-0.1, 0.5, 11);
+    assertEquals(c.toRgb(), [0, 128, 255]);
   });
 });
