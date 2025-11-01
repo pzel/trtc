@@ -4,11 +4,12 @@ test:
 	deno test "$t"
 
 traj: trajectory.png
-	feh $^
+	ristretto $^
 
-trajectory.dat: trajectory.ts
-	deno run ./$^ > $@
+trajectory.ppm: trajectory.ts
+	deno run --allow-write="$@" ./$^
 
-trajectory.png: trajectory.dat
-	gnuplot -e 'set term png; set output "$@" ; splot "$^"; show output'
+trajectory.png: trajectory.ppm
+	rm -f "$@"
+	ffmpeg -i "$^" "$@" 2>/dev/null
 

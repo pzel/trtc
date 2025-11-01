@@ -1,4 +1,6 @@
 import { Point, Vector } from "./tuple.ts";
+import { Canvas } from "./canvas.ts";
+import { Color } from "./color.ts";
 
 type Projectile = { position: Point; velocity: Vector };
 type Env = { gravity: Vector; wind: Vector };
@@ -13,17 +15,26 @@ function tick(proj: Projectile, env: Env): Projectile {
 if (import.meta.main) {
   const env = {
     gravity: new Vector(0, -0.1, 0),
-    wind: new Vector(-0.005, 0, 0.01),
+    wind: new Vector(-0.01, 0, 0.0),
   };
   let proj = {
-    position: new Point(0, 1, 0),
-    velocity: new Vector(1, 1, 0).normalize(),
+    position: new Point(1, 1, 0),
+    velocity: new Vector(1, 1, 0).normalize().times(2.5),
   };
-
+  const c = new Canvas(64, 64);
+  const red = new Color(1, 1, 1);
   while (proj.position.y > 0) {
     proj = tick(proj, env);
+    c.setPixelAt(
+      Math.round(proj.position.x),
+      Math.round(c.height - proj.position.y),
+      red,
+    );
     console.log(
-      `${proj.position.x} ${proj.position.z} ${Math.max(0, proj.position.y)} `,
+      Math.round(proj.position.x),
+      Math.round(c.height - proj.position.y),
+      red,
     );
   }
+  await Deno.writeTextFile("trajectory.ppm", c.toPpm());
 }

@@ -8,10 +8,11 @@ export class Canvas {
     this.width = width;
     this.height = height;
     const buf = new Array(width);
+    const black = new Color(0, 0, 0);
     for (let i = 0; i < width; i++) {
       const tmp = new Array(height);
       for (let j = 0; j < height; j++) {
-        tmp[j] = new Color(0, 0, 0);
+        tmp[j] = black;
       }
       buf[i] = tmp;
     }
