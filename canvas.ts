@@ -19,11 +19,11 @@ export class Canvas {
     this.buf = buf;
   }
 
-  pixelAt(x: number, y: number): Color {
+  at(x: number, y: number): Color {
     return this.buf[x][y];
   }
 
-  setPixelAt(x: number, y: number, c: Color) {
+  setAt(x: number, y: number, c: Color) {
     this.buf[x][y] = c;
   }
 
@@ -35,7 +35,7 @@ export class Canvas {
     for (let j = 0; j < this.height; j++) {
       let row: Array<string> = [];
       for (let i = 0; i < this.width; i++) {
-        const [r, g, b] = this.pixelAt(i, j).toRgb();
+        const [r, g, b] = this.at(i, j).toRgb();
         const nextEntry = `${r} ${g} ${b}`;
         if (row.length * 12 + nextEntry.length > 70) {
           buf.push(row.join(" "));

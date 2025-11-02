@@ -14,7 +14,7 @@ describe("Canvas", () => {
     const c = new Canvas(3, 3);
     for (let x = 0; x < 3; x++) {
       for (let y = 0; y < 3; y++) {
-        assert(c.pixelAt(x, y).tupleEquals(new Color(0, 0, 0)));
+        assert(c.at(x, y).equals(new Color(0, 0, 0)));
       }
     }
   });
@@ -22,9 +22,9 @@ describe("Canvas", () => {
     const c = new Canvas(3, 3);
     const red = new Color(1, 0, 0);
     //when
-    c.setPixelAt(2, 3, red);
+    c.setAt(2, 3, red);
     //then
-    assert(c.pixelAt(2, 3).tupleEquals(red));
+    assert(c.at(2, 3).equals(red));
   });
 
   it("can generate its PPM header", () => {
@@ -37,9 +37,9 @@ describe("Canvas", () => {
     //given
     const c = new Canvas(5, 3);
     //when
-    c.setPixelAt(0, 0, new Color(1.5, 0, 0)); //R will get clamped to 1
-    c.setPixelAt(2, 1, new Color(0, 0.5, 0));
-    c.setPixelAt(4, 2, new Color(-0.5, 0, 1)); //R clamped to 0
+    c.setAt(0, 0, new Color(1.5, 0, 0)); //R will get clamped to 1
+    c.setAt(2, 1, new Color(0, 0.5, 0));
+    c.setAt(4, 2, new Color(-0.5, 0, 1)); //R clamped to 0
     const ppm = c.toPpm();
     //then
     assertEquals(ppm.split("\n").splice(3, 3), [
@@ -53,7 +53,7 @@ describe("Canvas", () => {
     const c = new Canvas(10, 2);
     for (let i = 0; i < 10; i++) {
       for (let j = 0; j < 2; j++) {
-        c.setPixelAt(i, j, new Color(1, 1, 1));
+        c.setAt(i, j, new Color(1, 1, 1));
       }
     }
     const ppm = c.toPpm();

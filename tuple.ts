@@ -1,10 +1,8 @@
-export const EPSILON = 0.0001;
+import * as Float from "./float.ts";
 
 export class Tuple extends Float32Array {
+  _type = "Tuple";
   constructor(x: number, y: number, z: number, w: number) {
-    if (!((0.0 <= w) && (w <= 1.0))) {
-      throw new RangeError("W must be must be between 0 and 1.");
-    }
     super([x, y, z, w]);
   }
 
@@ -35,14 +33,12 @@ export class Tuple extends Float32Array {
     );
   }
 
-  tupleEquals(that: Tuple): boolean {
-    const eq = (a: number, b: number): boolean => Math.abs(a - b) < EPSILON;
-
+  equals(that: Tuple): boolean {
     return (
-      eq(this.x, that.x) &&
-      eq(this.y, that.y) &&
-      eq(this.z, that.z) &&
-      eq(this.w, that.w)
+      Float.eq(this.x, that.x) &&
+      Float.eq(this.y, that.y) &&
+      Float.eq(this.z, that.z) &&
+      Float.eq(this.w, that.w)
     );
   }
 
@@ -70,6 +66,7 @@ export class Tuple extends Float32Array {
   }
 
   negate(): Tuple {
+    if (this instanceof Point) throw new RangeError("no negating point");
     return new Tuple(
       -this.x,
       -this.y,
@@ -110,6 +107,18 @@ export class Point extends Tuple {
   constructor(x: number, y: number, z: number) {
     super(x, y, z, 1.0);
   }
+  override plus(that: Tuple | Point): Tuple {
+    if (that instanceof Point) {
+      throw new RangeError("no overriding 2 points");
+    } else {
+      return new Tuple(
+        this.x + that.x,
+        this.y + that.y,
+        this.z + that.z,
+        this.w + that.w,
+      );
+    }
+  }
 }
 
 export class Vector extends Tuple {
@@ -121,6 +130,15 @@ export class Vector extends Tuple {
       this.y * that.z - this.z * that.y,
       this.z * that.x - this.x * that.z,
       this.x * that.y - this.y * that.x,
+    );
+  }
+  override minus(that: Tuple | Point): Tuple {
+    if (that instanceof Point) throw new RangeError("can't vector-point");
+    return new Tuple(
+      this.x - that.x,
+      this.y - that.y,
+      this.z - that.z,
+      this.w - that.w,
     );
   }
 }

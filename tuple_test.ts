@@ -6,7 +6,8 @@ import {
   assertFalse,
   assertThrows,
 } from "@std/assert";
-import { EPSILON, Point, Tuple, Vector } from "./tuple.ts";
+import { EPSILON } from "./float.ts";
+import { Point, Tuple, Vector } from "./tuple.ts";
 
 const sqrt = Math.sqrt;
 
@@ -39,14 +40,14 @@ describe("tuples.feature", () => {
     //given
     const a = new Point(1.1, 2.2, 3.3);
     //then
-    assert(a.tupleEquals(new Tuple(1.1, 2.2, 3.3, 1.0)));
+    assert(a.equals(new Tuple(1.1, 2.2, 3.3, 1.0)));
   });
 
   it("a Vector is a tuple with w=0", () => {
     //given
     const a = new Vector(0.1, 0.2, 0.3);
     //then
-    assert(a.tupleEquals(new Tuple(0.1, 0.2, 0.3, 0.0)));
+    assert(a.equals(new Tuple(0.1, 0.2, 0.3, 0.0)));
   });
 
   it("a Vector is not equal to a Point with the same coords", () => {
@@ -54,7 +55,7 @@ describe("tuples.feature", () => {
     const v = new Vector(0.1, 0.2, 0.3);
     const p = new Point(0.1, 0.2, 0.3);
     //then
-    assertFalse(v.tupleEquals(p));
+    assertFalse(v.equals(p));
   });
 
   it("two Points are equal if they have the same components", () => {
@@ -62,7 +63,7 @@ describe("tuples.feature", () => {
     const v1 = new Point(4, 5, 6);
     const v2 = new Point(4, 5, 6);
     //then
-    assert(v1.tupleEquals(v2));
+    assert(v1.equals(v2));
   });
 
   it("two Points are NOT equal if they have differing components", () => {
@@ -70,7 +71,7 @@ describe("tuples.feature", () => {
     const v1 = new Point(4, 5, 6.1);
     const v2 = new Point(4, 5, 6);
     //then
-    assertFalse(v1.tupleEquals(v2));
+    assertFalse(v1.equals(v2));
   });
 
   it("two Vectors are equal if they have the same components", () => {
@@ -78,7 +79,7 @@ describe("tuples.feature", () => {
     const v1 = new Vector(4, 5, 6);
     const v2 = new Vector(4, 5, 6);
     //then
-    assert(v1.tupleEquals(v2));
+    assert(v1.equals(v2));
   });
 
   it("two Vectors are NOT equal if they have differing components", () => {
@@ -86,7 +87,7 @@ describe("tuples.feature", () => {
     const v1 = new Vector(4, 5, 6.1);
     const v2 = new Vector(4, 5, 6);
     //then
-    assertFalse(v1.tupleEquals(v2));
+    assertFalse(v1.equals(v2));
   });
 
   it("two Tuples can be added", () => {
@@ -97,7 +98,7 @@ describe("tuples.feature", () => {
     const t3 = t1.plus(t2);
 
     //then
-    assert(t3.tupleEquals(new Tuple(5, 7, 9, 0)));
+    assert(t3.equals(new Tuple(5, 7, 9, 0)));
   });
 
   it("a Point can be added to a Vector", () => {
@@ -108,7 +109,7 @@ describe("tuples.feature", () => {
     const p2 = p.plus(v);
 
     //then
-    assert(p2.tupleEquals(new Point(5, 7, 9)));
+    assert(p2.equals(new Point(5, 7, 9)));
   });
 
   it("Point+Vector addition is commutative", () => {
@@ -120,7 +121,7 @@ describe("tuples.feature", () => {
     const vp = v.plus(p);
 
     //then
-    assert(pv.tupleEquals(vp));
+    assert(pv.equals(vp));
   });
 
   it("adding two Points raises an exception", () => {
@@ -138,7 +139,7 @@ describe("tuples.feature", () => {
     //when
     const p3 = p1.minus(p2);
     //then
-    assert(p3.tupleEquals(new Vector(-2, -4, -6)));
+    assert(p3.equals(new Vector(-2, -4, -6)));
   });
 
   it("subtracts two Vectors to produce a Vector", () => {
@@ -148,7 +149,7 @@ describe("tuples.feature", () => {
     //when
     const v3 = v1.minus(v2);
     //then
-    assert(v3.tupleEquals(new Vector(-2, -4, -6)));
+    assert(v3.equals(new Vector(-2, -4, -6)));
   });
 
   it("subtracts a Vector from a Point to produce a Point", () => {
@@ -158,7 +159,7 @@ describe("tuples.feature", () => {
     //when
     const pv = p.minus(v);
     //then
-    assert(pv.tupleEquals(new Point(-2, -4, -6)));
+    assert(pv.equals(new Point(-2, -4, -6)));
   });
 
   it("subtracting a Point from a Vector raises an exception", () => {
@@ -174,14 +175,14 @@ describe("tuples.feature", () => {
     const zero = new Vector(0, 0, 0);
     const v = new Vector(1, -2, 3);
     //when
-    assert(zero.minus(v).tupleEquals(new Tuple(-1, 2, -3, 0)));
+    assert(zero.minus(v).equals(new Tuple(-1, 2, -3, 0)));
   });
 
   it("negate() is the same as subtracting a Vector from the zero vector", () => {
     //given
     const v = new Vector(1, -2, 3);
     //when
-    assert(v.negate().tupleEquals(new Tuple(-1, 2, -3, 0)));
+    assert(v.negate().equals(new Tuple(-1, 2, -3, 0)));
   });
 
   it("negating a Point raises an exception", () => {
@@ -198,7 +199,7 @@ describe("tuples.feature", () => {
     const vs = v.times(2.0);
 
     //then
-    assert(vs.tupleEquals(new Tuple(8, 10, -12, 0)));
+    assert(vs.equals(new Tuple(8, 10, -12, 0)));
   });
 
   it("divides a tuple by a scalar", () => {
@@ -208,7 +209,7 @@ describe("tuples.feature", () => {
     const vs = v.div(2.0);
 
     //then
-    assert(vs.tupleEquals(new Tuple(2, 2.5, -3, 0.5)));
+    assert(vs.equals(new Tuple(2, 2.5, -3, 0.5)));
   });
 
   it("Vectors can tell their magnitude", () => {
@@ -221,8 +222,8 @@ describe("tuples.feature", () => {
   });
 
   it("Vectors return normalized form", () => {
-    assert(new Vector(4, 0, 0).normalize().tupleEquals(new Vector(1, 0, 0)));
-    assert(new Vector(0, -2, 0).normalize().tupleEquals(new Vector(0, -1, 0)));
+    assert(new Vector(4, 0, 0).normalize().equals(new Vector(1, 0, 0)));
+    assert(new Vector(0, -2, 0).normalize().equals(new Vector(0, -1, 0)));
   });
 
   it("Vector.normalize() returns correct values", () => {
@@ -232,7 +233,7 @@ describe("tuples.feature", () => {
     //when
     const vn = v.normalize();
     //then
-    assert(vn.tupleEquals(expected));
+    assert(vn.equals(expected));
   });
 
   it("dot product is calculated correctly on two tuples", () => {
@@ -252,7 +253,7 @@ describe("tuples.feature", () => {
     const ba = b.cross(a);
 
     //then
-    assert(ab.tupleEquals(new Vector(-1, 2, -1)));
-    assert(ba.tupleEquals(new Vector(1, -2, 1)));
+    assert(ab.equals(new Vector(-1, 2, -1)));
+    assert(ba.equals(new Vector(1, -2, 1)));
   });
 });
