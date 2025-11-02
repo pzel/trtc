@@ -2,7 +2,6 @@ import * as Float from "./float.ts";
 import { Tuple } from "./tuple.ts";
 
 export class Matrix {
-  _type = "Matrix";
   rows: number;
   columns: number;
   buf: Array<Array<number>>;
@@ -35,6 +34,19 @@ export class Matrix {
       }
     }
     return res;
+  }
+
+  transpose(): Matrix {
+    const res = new Array(this.columns);
+    for (let c = 0; c < this.columns; c++) {
+      res[c] = new Array(this.rows);
+    }
+    for (let j = 0; j < this.rows; j++) {
+      for (let i = 0; i < this.columns; i++) {
+        res[i][j] = this.buf[j][i];
+      }
+    }
+    return new Matrix(res);
   }
 
   times(that: Matrix): Matrix;

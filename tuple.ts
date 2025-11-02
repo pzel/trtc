@@ -1,7 +1,6 @@
 import * as Float from "./float.ts";
 
 export class Tuple extends Float32Array {
-  _type = "Tuple";
   constructor(x: number, y: number, z: number, w: number) {
     super([x, y, z, w]);
   }

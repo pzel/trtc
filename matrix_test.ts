@@ -163,4 +163,50 @@ describe("Matrices", () => {
     const t = new Tuple(1, -2, 3, -4);
     assert(IdentityMatrix.times(t).equals(t));
   });
+
+  it("transposing a matrix", () => {
+    const a = new Matrix([
+      [0, 9, 3, 0],
+      [9, 8, 0, 8],
+      [1, 8, 5, 3],
+      [0, 0, 5, 8],
+    ]);
+    const expected = new Matrix([
+      [0, 9, 1, 0],
+      [9, 8, 8, 0],
+      [3, 0, 5, 5],
+      [0, 8, 3, 8],
+    ]);
+
+    assert(a.transpose().equals(expected));
+  });
+
+  it("transposing id matrix is id matrix", () => {
+    assert(IdentityMatrix.transpose().equals(IdentityMatrix));
+  });
+
+  it("transposing works on 2x2 matrices", () => {
+    const m = new Matrix([
+      [0, 1],
+      [2, 3],
+    ]);
+    const expected = new Matrix([
+      [0, 2],
+      [1, 3],
+    ]);
+    assert(m.transpose().equals(expected));
+  });
+
+  it("transposing works on non-square matrices", () => {
+    const m = new Matrix([
+      [1, 2, 3],
+      [4, 5, 6],
+    ]);
+    const expected = new Matrix([
+      [1, 4],
+      [2, 5],
+      [3, 6],
+    ]);
+    assert(m.transpose().equals(expected));
+  });
 });
