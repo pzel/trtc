@@ -22,18 +22,13 @@ if (import.meta.main) {
     velocity: new Vector(1, 1, 0).normalize().times(2.5),
   };
   const c = new Canvas(64, 64);
-  const red = new Color(1, 1, 1);
+  const point = new Color(1, 1, 1);
   while (proj.position.y > 0) {
     proj = tick(proj, env);
     c.setPixelAt(
       Math.round(proj.position.x),
       Math.round(c.height - proj.position.y),
-      red,
-    );
-    console.log(
-      Math.round(proj.position.x),
-      Math.round(c.height - proj.position.y),
-      red,
+      point,
     );
   }
   await Deno.writeTextFile("trajectory.ppm", c.toPpm());
