@@ -209,4 +209,40 @@ describe("Matrices", () => {
     ]);
     assert(m.transpose().equals(expected));
   });
+
+  it("can calculate the determinant of a 2x2 matrix", () => {
+    const m = new Matrix([
+      [1, 5],
+      [-3, 2],
+    ]);
+    assertEquals(m.determinant(), 17);
+  });
+
+  it("a submatrix of a 3x3 matrix is a 2x2 matrix", () => {
+    const m = new Matrix([
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9],
+    ]);
+    const expected = new Matrix([
+      [4, 5],
+      [7, 8],
+    ]);
+    assert(m.submatrix(0, 2).equals(expected));
+  });
+
+  it("a submatrix of a 4x4 matrix is a 3x3 matrix", () => {
+    const m = new Matrix([
+      [21, 22, 23, 24],
+      [25, 26, 27, 28],
+      [11, 12, 13, 14],
+      [15, 16, 17, 18],
+    ]);
+    const expected = new Matrix([
+      [21, 23, 24],
+      [25, 27, 28],
+      [15, 17, 18],
+    ]);
+    assert(m.submatrix(2, 1).equals(expected));
+  });
 });

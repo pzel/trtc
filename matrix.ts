@@ -12,7 +12,9 @@ export class Matrix {
     if (!input.every((row) => row.length == this.columns)) {
       throw new SyntaxError("all rows/columns must have the same cardinality");
     }
-    this.buf = structuredClone(input);
+    // this.buf = structuredClone(input);
+    // IDK which one is more fitting
+    this.buf = input;
   }
 
   at(row: number, col: number): number {
@@ -41,6 +43,7 @@ export class Matrix {
     for (let c = 0; c < this.columns; c++) {
       res[c] = new Array(this.rows);
     }
+
     for (let j = 0; j < this.rows; j++) {
       for (let i = 0; i < this.columns; i++) {
         res[i][j] = this.buf[j][i];
@@ -52,11 +55,37 @@ export class Matrix {
   times(that: Matrix): Matrix;
   times(that: Tuple): Tuple;
   times(that: Matrix | Tuple): Matrix | Tuple {
-    if (that instanceof Matrix) return this._timesMatrix(that);
-    if (that instanceof Tuple) return this._timesTuple(that);
+    if (that instanceof Matrix) return this.timesMatrix(that);
+    if (that instanceof Tuple) return this.timesTuple(that);
     throw new RangeError("Unsupported type");
   }
-  _timesTuple(that: Tuple): Tuple {
+
+  determinant(): number {
+    //currently only works on 2x2 matrices
+    if (this.rows == 2 && this.columns == 2) {
+      return this.buf[0][0] * this.buf[1][1] - this.buf[1][0] * this.buf[0][1];
+    }
+    throw new RangeError("not implemented");
+  }
+
+  submatrix(row: number, column: number): Matrix {
+    const res = new Array(this.rows - 1);
+    for (let i = 0; i < res.length; i++) res[i] = new Array(this.columns - 1);
+
+    let jj, ii = 0;
+    for (let i = 0; i < this.rows; i++) {
+      if (!(i == row)) {
+        jj = 0;
+        for (let j = 0; j < this.columns; j++) {
+          if (!(j == column)) res[ii][jj++] = this.buf[i][j];
+        }
+        ii++;
+      }
+    }
+    return new Matrix(res);
+  }
+
+  private timesTuple(that: Tuple): Tuple {
     const args = [];
     for (let i = 0; i < this.rows; i++) {
       args.push(this.rowAt(i).dot(that));
@@ -65,7 +94,7 @@ export class Matrix {
     return new Tuple(a, b, c, d);
   }
 
-  _timesMatrix(that: Matrix): Matrix {
+  private timesMatrix(that: Matrix): Matrix {
     if (!(this.rows == that.columns)) {
       throw new RangeError("cannot multiply NxM");
     }
