@@ -245,4 +245,131 @@ describe("Matrices", () => {
     ]);
     assert(m.submatrix(2, 1).equals(expected));
   });
+
+  it("calculating a minor of a 3x3 matrix", () => {
+    const a = new Matrix([
+      [3, 5, 0],
+      [2, -1, -7],
+      [6, -1, 5],
+    ]);
+    const b = a.submatrix(1, 0);
+    assertEquals(b.determinant(), 25);
+    assertEquals(a.minor(1, 0), 25);
+  });
+
+  it("calculating a cofactor of a 3x3 matrix", () => {
+    const a = new Matrix([
+      [3, 5, 0],
+      [2, -1, -7],
+      [6, -1, 5],
+    ]);
+    assertEquals(a.minor(0, 0), -12);
+    assertEquals(a.cofactor(0, 0), -12);
+    assertEquals(a.minor(1, 0), 25);
+    assertEquals(a.cofactor(1, 0), -25);
+  });
+
+  it("calculating the determinant of a 3x3 matrix", () => {
+    const a = new Matrix([
+      [1, 2, 6],
+      [-5, 8, -4],
+      [2, 6, 4],
+    ]);
+    assertEquals(a.cofactor(0, 0), 56);
+    assertEquals(a.cofactor(0, 1), 12);
+    assertEquals(a.cofactor(0, 2), -46);
+    assertEquals(a.determinant(), -196);
+  });
+
+  it("calculating the determinant of a 4x4 matrix", () => {
+    const a = new Matrix([
+      [-2, -8, 3, 5],
+      [-3, 1, 7, 3],
+      [1, 2, -9, 6],
+      [-6, 7, 7, -9],
+    ]);
+    assertEquals(a.cofactor(0, 0), 690);
+    assertEquals(a.cofactor(0, 1), 447);
+    assertEquals(a.cofactor(0, 2), 210);
+    assertEquals(a.cofactor(0, 3), 51);
+    assertEquals(a.determinant(), -4071);
+  });
+
+  it("testing an invertible matrix for invertibility", () => {
+    const a = new Matrix([
+      [6, 4, 4, 4],
+      [5, 5, 7, 6],
+      [4, -9, 3, -7],
+      [9, 1, 7, -6],
+    ]);
+    assertEquals(a.determinant(), -2120);
+    assert(a.invertible());
+  });
+
+  it("testing an invertible matrix for invertibility", () => {
+    const a = new Matrix([
+      [-4, 2, -2, -3],
+      [9, 6, 2, 6],
+      [0, -5, 1, -5],
+      [0, 0, 0, 0],
+    ]);
+    assertEquals(a.determinant(), 0);
+    assertFalse(a.invertible());
+  });
+
+  it("calculating the inverse of a matrix", () => {
+    const a = new Matrix([
+      [-5, 2, 6, -8],
+      [1, -5, 1, 8],
+      [7, 7, -6, -7],
+      [1, -3, 7, 4],
+    ]);
+    const b = a.inverse();
+    assertEquals(a.determinant(), 532);
+    assertEquals(a.cofactor(2, 3), -160);
+    assertAlmostEquals(b.buf[3][2], -160 / 532, 0.00001);
+    assertEquals(a.cofactor(3, 2), 105);
+    assertAlmostEquals(b.buf[2][3], 105 / 532, 0.00001);
+    assert(b.equals(
+      new Matrix([
+        [0.21805, 0.45113, 0.24060, -0.04511],
+        [-0.80827, -1.45677, -0.44361, 0.52068],
+        [-0.07895, -0.22368, -0.05263, 0.19737],
+        [-0.52256, -0.81391, -0.30075, 0.30639],
+      ]),
+    ));
+  });
+
+  it("calculating the inverse of another matrix", () => {
+    const a = new Matrix([
+      [8, -5, 9, 2],
+      [7, 5, 6, 1],
+      [-6, 0, 9, 6],
+      [-3, 0, -9, -4],
+    ]);
+    const expected = new Matrix([
+      [-0.15385, -0.15385, -0.28205, -0.53846],
+      [-0.07692, 0.12308, 0.02564, 0.03077],
+      [0.35897, 0.35897, 0.43590, 0.92308],
+      [-0.69231, -0.69231, -0.76923, -1.92308],
+    ]);
+    assert(a.inverse().equals(expected));
+  });
+
+  it("multiplying a product by its inverse", () => {
+    const a = new Matrix([
+      [3, -9, 7, 3],
+      [3, -8, 2, -9],
+      [-4, 4, 4, 1],
+      [-6, 5, -1, 1],
+    ]);
+    const b = new Matrix([
+      [8, 2, 2, 2],
+      [3, -1, 7, 0],
+      [7, 0, 5, 4],
+      [6, -2, 0, 5],
+    ]);
+    const product = a.times(b);
+    assert(product.times(b.inverse()).equals(a));
+  });
 });

@@ -39,10 +39,7 @@ export class Matrix {
   }
 
   transpose(): Matrix {
-    const res = new Array(this.columns);
-    for (let c = 0; c < this.columns; c++) {
-      res[c] = new Array(this.rows);
-    }
+    const res = this.freshBuffer(this.columns, this.rows);
 
     for (let j = 0; j < this.rows; j++) {
       for (let i = 0; i < this.columns; i++) {
@@ -60,18 +57,47 @@ export class Matrix {
     throw new RangeError("Unsupported type");
   }
 
+  invertible(): boolean {
+    return this.determinant() != 0;
+  }
+
+  inverse(): Matrix {
+    if (!this.invertible()) throw new RangeError("matrix not invertible");
+    const res = this.freshBuffer();
+    const d = this.determinant();
+    for (let i = 0; i < res.length; i++) {
+      for (let j = 0; j < res[0].length; j++) {
+        const c = this.cofactor(i, j);
+        res[j][i] = c / d;
+      }
+    }
+    return new Matrix(res);
+  }
+
   determinant(): number {
-    //currently only works on 2x2 matrices
+    // for 2x2 matrices:
     if (this.rows == 2 && this.columns == 2) {
       return this.buf[0][0] * this.buf[1][1] - this.buf[1][0] * this.buf[0][1];
     }
-    throw new RangeError("not implemented");
+    const r = this.buf[0];
+    let sum = 0;
+    for (let col = 0; col < r.length; col++) {
+      sum += r[col] * this.cofactor(0, col);
+    }
+    return sum;
+  }
+
+  minor(row: number, column: number): number {
+    return this.submatrix(row, column).determinant();
+  }
+
+  cofactor(row: number, column: number): number {
+    const minor = this.minor(row, column);
+    return ((row + column) % 2) ? -minor : +minor;
   }
 
   submatrix(row: number, column: number): Matrix {
-    const res = new Array(this.rows - 1);
-    for (let i = 0; i < res.length; i++) res[i] = new Array(this.columns - 1);
-
+    const res = this.freshBuffer(this.rows - 1, this.columns - 1);
     let jj, ii = 0;
     for (let i = 0; i < this.rows; i++) {
       if (!(i == row)) {
@@ -98,18 +124,25 @@ export class Matrix {
     if (!(this.rows == that.columns)) {
       throw new RangeError("cannot multiply NxM");
     }
-    const input = new Array(this.rows);
+    const input = this.freshBuffer();
     for (let i = 0; i < this.rows; i++) {
-      const row = new Array(this.columns);
       for (let j = 0; j < this.columns; j++) {
-        row[j] = (this.at(i, 0) * that.at(0, j)) +
+        input[i][j] = (this.at(i, 0) * that.at(0, j)) +
           (this.at(i, 1) * that.at(1, j)) +
           (this.at(i, 2) * that.at(2, j)) +
           (this.at(i, 3) * that.at(3, j));
       }
-      input[i] = row;
     }
     return new Matrix(input);
+  }
+
+  private freshBuffer(
+    rows = this.rows,
+    columns = this.columns,
+  ): Array<Array<number>> {
+    const res = new Array(rows);
+    for (let i = 0; i < rows; i++) res[i] = new Array(columns);
+    return res;
   }
 }
 
