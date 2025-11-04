@@ -6,8 +6,11 @@ import {
   assertFalse,
   assertThrows,
 } from "@std/assert";
-import { IdentityMatrix, Matrix } from "./matrix.ts";
-import { Tuple } from "./tuple.ts";
+import { Matrix } from "./matrix.ts";
+import { Point, Tuple, Vector } from "./tuple.ts";
+
+const sqrt = Math.sqrt;
+const sqrt2 = Math.sqrt(2);
 
 describe("Matrices", () => {
   it("can construct and inspect a 4x4 matrix", () => {
@@ -156,12 +159,12 @@ describe("Matrices", () => {
       [2, 4, 8, 16],
       [4, 8, 16, 32],
     ]);
-    assert(m.times(IdentityMatrix).equals(m));
+    assert(m.times(Matrix.identity()).equals(m));
   });
 
   it("multiplying identity matrix by tuple T is T", () => {
     const t = new Tuple(1, -2, 3, -4);
-    assert(IdentityMatrix.times(t).equals(t));
+    assert(Matrix.identity().times(t).equals(t));
   });
 
   it("transposing a matrix", () => {
@@ -182,7 +185,7 @@ describe("Matrices", () => {
   });
 
   it("transposing id matrix is id matrix", () => {
-    assert(IdentityMatrix.transpose().equals(IdentityMatrix));
+    assert(Matrix.identity().transpose().equals(Matrix.identity()));
   });
 
   it("transposing works on 2x2 matrices", () => {
@@ -371,5 +374,90 @@ describe("Matrices", () => {
     ]);
     const product = a.times(b);
     assert(product.times(b.inverse()).equals(a));
+  });
+
+  it("multiplying a point by a translation matrix", () => {
+    const transform = Matrix.translate(5, -3, 2);
+    const p = new Point(-3, 4, 5);
+    assert(transform.times(p).equals(new Point(2, 1, 7)));
+  });
+
+  it("multiplying a point by the inverse of a translation matrix", () => {
+    const transform = Matrix.translate(5, -3, 2).inverse();
+    const p = new Point(-3, 4, 5);
+    assert(transform.times(p).equals(new Point(-8, 7, 3)));
+  });
+
+  it("translation does not affect vectors", () => {
+    const transform = Matrix.translate(5, -3, 2);
+    const v = new Vector(-3, 4, 5);
+    assert(transform.times(v).equals(v));
+  });
+
+  it("scaling a point", () => {
+    const transform = Matrix.scale(2, 3, 4);
+    const p = new Point(-1, 2, 3);
+    assert(transform.times(p).equals(new Point(-2, 6, 12)));
+  });
+
+  it("scaling a vector", () => {
+    const transform = Matrix.scale(2, 3, 4);
+    const p = new Vector(-1, 2, 3);
+    assert(transform.times(p).equals(new Vector(-2, 6, 12)));
+  });
+
+  it("inverse scaling", () => {
+    const transform = Matrix.scale(2, 3, 4).inverse();
+    const p = new Vector(-4, 6, -8);
+    assert(transform.times(p).equals(new Vector(-2, 2, -2)));
+  });
+
+  it("scaling by -1 is reflection", () => {
+    const transform = Matrix.scale(-1, 1, 1);
+    const p = new Point(-4, 2, 2);
+    assert(transform.times(p).equals(new Point(4, 2, 2)));
+  });
+
+  it("rotates a point around the X axis", () => {
+    const p = new Point(0, 1, 0);
+    const halfQuarter = Matrix.rotateX(Math.PI / 4); // 45 deg
+    const fullQuarter = Matrix.rotateX(Math.PI / 2); // 90 deg
+    assert(halfQuarter.times(p).equals(new Point(0, sqrt2 / 2, sqrt2 / 2)));
+    assert(fullQuarter.times(p).equals(new Point(0, 0, 1)));
+    assert(fullQuarter.times(fullQuarter).times(p).equals(new Point(0, -1, 0)));
+  });
+
+  it("inverse rotation on the X axis", () => {
+    const p = new Point(0, 1, 0);
+    const halfQuarter = Matrix.rotateX(Math.PI / 4).inverse(); // -45 deg
+    assert(halfQuarter.times(p).equals(new Point(0, sqrt2 / 2, -sqrt2 / 2)));
+  });
+
+  it("rotates a point around the Y axis", () => {
+    const p = new Point(0, 0, 1);
+    const halfQuarter = Matrix.rotateY(Math.PI / 4);
+    const fullQuarter = Matrix.rotateY(Math.PI / 2);
+    assert(halfQuarter.times(p).equals(new Point(sqrt2 / 2, 0, sqrt2 / 2)));
+    assert(fullQuarter.times(p).equals(new Point(1, 0, 0)));
+  });
+
+  it("inverse rotation on the Y axis", () => {
+    const p = new Point(0, 0, 1);
+    const halfQuarter = Matrix.rotateY(Math.PI / 4).inverse();
+    assert(halfQuarter.times(p).equals(new Point(-sqrt2 / 2, 0, sqrt2 / 2)));
+  });
+
+  it("rotates a point around the Z axis", () => {
+    const p = new Point(0, 1, 0);
+    const halfQuarter = Matrix.rotateZ(Math.PI / 4);
+    const fullQuarter = Matrix.rotateZ(Math.PI / 2);
+    assert(halfQuarter.times(p).equals(new Point(-sqrt2 / 2, sqrt2 / 2, 0)));
+    assert(fullQuarter.times(p).equals(new Point(-1, 0, 0)));
+  });
+
+  it("inverse rotation around the Z axis", () => {
+    const p = new Point(0, 1, 0);
+    const halfQuarter = Matrix.rotateZ(Math.PI / 4).inverse();
+    assert(halfQuarter.times(p).equals(new Point(sqrt2 / 2, sqrt2 / 2, 0)));
   });
 });

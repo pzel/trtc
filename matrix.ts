@@ -17,6 +17,58 @@ export class Matrix {
     this.buf = input;
   }
 
+  static identity(): Matrix {
+    return new Matrix([
+      [1, 0, 0, 0],
+      [0, 1, 0, 0],
+      [0, 0, 1, 0],
+      [0, 0, 0, 1],
+    ]);
+  }
+
+  static translate(x: number, y: number, z: number): Matrix {
+    const m = this.identity();
+    m.buf[0][3] = x;
+    m.buf[1][3] = y;
+    m.buf[2][3] = z;
+    return m;
+  }
+
+  static scale(x: number, y: number, z: number): Matrix {
+    const m = this.identity();
+    m.buf[0][0] = x;
+    m.buf[1][1] = y;
+    m.buf[2][2] = z;
+    return m;
+  }
+
+  static rotateX(radians: number): Matrix {
+    const m = this.identity();
+    m.buf[1][1] = Math.cos(radians);
+    m.buf[2][2] = m.buf[1][1];
+    m.buf[2][1] = Math.sin(radians);
+    m.buf[1][2] = -m.buf[2][1];
+    return m;
+  }
+
+  static rotateY(radians: number): Matrix {
+    const m = this.identity();
+    m.buf[0][0] = Math.cos(radians);
+    m.buf[2][2] = m.buf[0][0];
+    m.buf[0][2] = Math.sin(radians);
+    m.buf[2][0] = -m.buf[0][2];
+    return m;
+  }
+
+  static rotateZ(radians: number): Matrix {
+    const m = this.identity();
+    m.buf[0][0] = Math.cos(radians);
+    m.buf[1][1] = m.buf[0][0];
+    m.buf[1][0] = Math.sin(radians);
+    m.buf[0][1] = -m.buf[1][0];
+    return m;
+  }
+
   at(row: number, col: number): number {
     return this.buf[row][col];
   }
