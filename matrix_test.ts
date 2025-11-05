@@ -496,4 +496,31 @@ describe("Matrices", () => {
     const shear = Matrix.shear(0, 0, 0, 0, 0, 1);
     assert(shear.times(p).equals(new Point(2, 3, 4 + 3)));
   });
+
+  it("individual transformations applied in sequence", () => {
+    const p = new Point(1, 0, 1);
+    const a = Matrix.rotateX(Math.PI / 2);
+    const b = Matrix.scale(5, 5, 5);
+    const c = Matrix.translate(10, 5, 7);
+    // when
+    const p2 = a.times(p);
+    assert(p2.equals(new Point(1, -1, 0)));
+    // when
+    const p3 = b.times(p2);
+    assert(p3.equals(new Point(5, -5, 0)));
+    // when
+    const p4 = c.times(p3);
+    assert(p4.equals(new Point(15, 0, 7)));
+  });
+
+  it("composed transformations applied", () => {
+    const p = new Point(1, 0, 1);
+    const a = Matrix.rotateX(Math.PI / 2);
+    const b = Matrix.scale(5, 5, 5);
+    const c = Matrix.translate(10, 5, 7);
+    // when (composition requires 'reverse' order of application)
+    const t = c.times(b).times(a);
+    // then
+    assert(t.times(p).equals(new Point(15, 0, 7)));
+  });
 });
