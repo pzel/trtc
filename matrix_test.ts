@@ -460,4 +460,40 @@ describe("Matrices", () => {
     const halfQuarter = Matrix.rotateZ(Math.PI / 4).inverse();
     assert(halfQuarter.times(p).equals(new Point(sqrt2 / 2, sqrt2 / 2, 0)));
   });
+
+  it("sharing moves x in proportion to y", () => {
+    const p = new Point(2, 3, 4);
+    const shear = Matrix.shear(1, 0, 0, 0, 0, 0);
+    assert(shear.times(p).equals(new Point(2 + 3, 3, 4)));
+  });
+
+  it("sharing moves x in proportion to z", () => {
+    const p = new Point(2, 3, 4);
+    const shear = Matrix.shear(0, 1, 0, 0, 0, 0);
+    assert(shear.times(p).equals(new Point(2 + 4, 3, 4)));
+  });
+
+  it("sharing moves y in proportion to x", () => {
+    const p = new Point(2, 3, 4);
+    const shear = Matrix.shear(0, 0, 1, 0, 0, 0);
+    assert(shear.times(p).equals(new Point(2, 3 + 2, 4)));
+  });
+
+  it("sharing moves y in proportion to z", () => {
+    const p = new Point(2, 3, 4);
+    const shear = Matrix.shear(0, 0, 0, 1, 0, 0);
+    assert(shear.times(p).equals(new Point(2, 3 + 4, 4)));
+  });
+
+  it("sharing moves z in proportion to x", () => {
+    const p = new Point(2, 3, 4);
+    const shear = Matrix.shear(0, 0, 0, 0, 1, 0);
+    assert(shear.times(p).equals(new Point(2, 3, 4 + 2)));
+  });
+
+  it("sharing moves z in proportion to y", () => {
+    const p = new Point(2, 3, 4);
+    const shear = Matrix.shear(0, 0, 0, 0, 0, 1);
+    assert(shear.times(p).equals(new Point(2, 3, 4 + 3)));
+  });
 });

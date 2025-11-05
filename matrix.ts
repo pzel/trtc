@@ -1,12 +1,14 @@
 import * as Float from "./float.ts";
 import { Tuple } from "./tuple.ts";
 
-export class Matrix {
-  rows: number;
-  columns: number;
-  buf: Array<Array<number>>;
+type N = number;
 
-  constructor(input: Array<Array<number>>) {
+export class Matrix {
+  rows: N;
+  columns: N;
+  buf: Array<Array<N>>;
+
+  constructor(input: Array<Array<N>>) {
     this.rows = input.length;
     this.columns = input[0].length;
     if (!input.every((row) => row.length == this.columns)) {
@@ -26,7 +28,7 @@ export class Matrix {
     ]);
   }
 
-  static translate(x: number, y: number, z: number): Matrix {
+  static translate(x: N, y: N, z: N): Matrix {
     const m = this.identity();
     m.buf[0][3] = x;
     m.buf[1][3] = y;
@@ -34,7 +36,7 @@ export class Matrix {
     return m;
   }
 
-  static scale(x: number, y: number, z: number): Matrix {
+  static scale(x: N, y: N, z: N): Matrix {
     const m = this.identity();
     m.buf[0][0] = x;
     m.buf[1][1] = y;
@@ -42,7 +44,7 @@ export class Matrix {
     return m;
   }
 
-  static rotateX(radians: number): Matrix {
+  static rotateX(radians: N): Matrix {
     const m = this.identity();
     m.buf[1][1] = Math.cos(radians);
     m.buf[2][2] = m.buf[1][1];
@@ -51,7 +53,7 @@ export class Matrix {
     return m;
   }
 
-  static rotateY(radians: number): Matrix {
+  static rotateY(radians: N): Matrix {
     const m = this.identity();
     m.buf[0][0] = Math.cos(radians);
     m.buf[2][2] = m.buf[0][0];
@@ -60,7 +62,7 @@ export class Matrix {
     return m;
   }
 
-  static rotateZ(radians: number): Matrix {
+  static rotateZ(radians: N): Matrix {
     const m = this.identity();
     m.buf[0][0] = Math.cos(radians);
     m.buf[1][1] = m.buf[0][0];
@@ -69,11 +71,22 @@ export class Matrix {
     return m;
   }
 
-  at(row: number, col: number): number {
+  static shear(xy: N, xz: N, yx: N, yz: N, zx: N, zy: N): Matrix {
+    const m = this.identity();
+    m.buf[0][1] = xy;
+    m.buf[0][2] = xz;
+    m.buf[1][0] = yx;
+    m.buf[1][2] = yz;
+    m.buf[2][0] = zx;
+    m.buf[2][1] = zy;
+    return m;
+  }
+
+  at(row: N, col: N): N {
     return this.buf[row][col];
   }
 
-  rowAt(row: number): Tuple {
+  rowAt(row: N): Tuple {
     if (!(this.rows == 4)) throw new RangeError("only 4x4 matrices supported");
     const [a, b, c, d] = this.buf[row];
     return new Tuple(a, b, c, d);
@@ -126,7 +139,7 @@ export class Matrix {
     return new Matrix(res);
   }
 
-  determinant(): number {
+  determinant(): N {
     // for 2x2 matrices:
     if (this.rows == 2 && this.columns == 2) {
       return this.buf[0][0] * this.buf[1][1] - this.buf[1][0] * this.buf[0][1];
@@ -139,16 +152,16 @@ export class Matrix {
     return sum;
   }
 
-  minor(row: number, column: number): number {
+  minor(row: N, column: N): N {
     return this.submatrix(row, column).determinant();
   }
 
-  cofactor(row: number, column: number): number {
+  cofactor(row: N, column: N): N {
     const minor = this.minor(row, column);
     return ((row + column) % 2) ? -minor : +minor;
   }
 
-  submatrix(row: number, column: number): Matrix {
+  submatrix(row: N, column: N): Matrix {
     const res = this.freshBuffer(this.rows - 1, this.columns - 1);
     let jj, ii = 0;
     for (let i = 0; i < this.rows; i++) {
@@ -191,7 +204,7 @@ export class Matrix {
   private freshBuffer(
     rows = this.rows,
     columns = this.columns,
-  ): Array<Array<number>> {
+  ): Array<Array<N>> {
     const res = new Array(rows);
     for (let i = 0; i < rows; i++) res[i] = new Array(columns);
     return res;
