@@ -1,4 +1,4 @@
 # intermediate files from CH1 and CH2
-trajectory.dat
-trajectory.png
-trajectory.ppm
+*.dat
+*.png
+*.ppm
