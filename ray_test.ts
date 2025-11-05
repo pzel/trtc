@@ -1,6 +1,12 @@
-import { assert, assertAlmostEquals, assertEquals } from "@std/assert";
+import {
+  assert,
+  assertAlmostEquals,
+  assertEquals,
+  assertStrictEquals,
+} from "@std/assert";
 import { Ray } from "./ray.ts";
 import { Sphere } from "./sphere.ts";
+import { Intersection, Intersections } from "./intersection.ts";
 import { Point, Vector } from "./tuple.ts";
 import { describe, it } from "@std/testing/bdd";
 
@@ -26,8 +32,10 @@ describe("Rays", () => {
     const s = new Sphere();
     const xs = s.intersect(r);
     assertEquals(xs.length, 2);
-    assertAlmostEquals(xs[0], 4.0, 0.0001);
-    assertAlmostEquals(xs[1], 6.0, 0.0001);
+    assertAlmostEquals(xs.at(0).t, 4.0, 0.0001);
+    assertAlmostEquals(xs.at(1).t, 6.0, 0.0001);
+    assertStrictEquals(xs.at(0).object, s);
+    assertStrictEquals(xs.at(1).object, s);
   });
 
   it("intersects a sphere at a tangent", () => {
@@ -35,8 +43,8 @@ describe("Rays", () => {
     const s = new Sphere();
     const xs = s.intersect(r);
     assertEquals(xs.length, 2);
-    assertAlmostEquals(xs[0], 5.0, 0.0001);
-    assertAlmostEquals(xs[1], 5.0, 0.0001);
+    assertAlmostEquals(xs.at(0).t, 5.0, 0.0001);
+    assertAlmostEquals(xs.at(1).t, 5.0, 0.0001);
   });
 
   it("misses a sphere", () => {
@@ -50,8 +58,8 @@ describe("Rays", () => {
     const s = new Sphere();
     const xs = s.intersect(r);
     assertEquals(xs.length, 2);
-    assertAlmostEquals(xs[0], -1, 0.0001);
-    assertAlmostEquals(xs[1], 1, 0.0001);
+    assertAlmostEquals(xs.at(0).t, -1, 0.0001);
+    assertAlmostEquals(xs.at(1).t, 1, 0.0001);
   });
 
   it("the sphere is behind the ray", () => {
@@ -59,7 +67,24 @@ describe("Rays", () => {
     const s = new Sphere();
     const xs = s.intersect(r);
     assertEquals(xs.length, 2);
-    assertAlmostEquals(xs[0], -6.0, 0.0001);
-    assertAlmostEquals(xs[1], -4.0, 0.0001);
+    assertAlmostEquals(xs.at(0).t, -6.0, 0.0001);
+    assertAlmostEquals(xs.at(1).t, -4.0, 0.0001);
+  });
+
+  it("an Intersection encapsulates the t and the object intersected", () => {
+    const s = new Sphere();
+    const i = new Intersection(3.5, s);
+    assertAlmostEquals(i.t, 3.5);
+    assertStrictEquals(i.object, s);
+  });
+
+  it("aggregating intersections", () => {
+    const s = new Sphere();
+    const i1 = new Intersection(3, s);
+    const i2 = new Intersection(4, s);
+    const is = new Intersections([i1, i2]);
+    assertEquals(is.length, 2);
+    assertEquals(is.at(0).t, 3);
+    assertEquals(is.at(1).t, 4);
   });
 });
