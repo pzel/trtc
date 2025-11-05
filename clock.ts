@@ -13,9 +13,9 @@ if (import.meta.main) {
     .translate(w / 2, h / 2, 0);
 
   for (let hour = 0; hour < 12; hour++) {
-    const p = shift.times(Matrix.rotationZ(hourAngle * hour)).times(
-      new Point(0, -1, 0),
-    );
+    const p = shift
+      .times(Matrix.rotationZ(hourAngle * hour))
+      .times(new Point(0, -1, 0));
     c.setAt(Math.round(p.x), Math.round(p.y), white);
   }
 
