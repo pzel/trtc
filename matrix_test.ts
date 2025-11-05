@@ -377,51 +377,51 @@ describe("Matrices", () => {
   });
 
   it("multiplying a point by a translation matrix", () => {
-    const transform = Matrix.translate(5, -3, 2);
+    const transform = Matrix.translation(5, -3, 2);
     const p = new Point(-3, 4, 5);
     assert(transform.times(p).equals(new Point(2, 1, 7)));
   });
 
   it("multiplying a point by the inverse of a translation matrix", () => {
-    const transform = Matrix.translate(5, -3, 2).inverse();
+    const transform = Matrix.translation(5, -3, 2).inverse();
     const p = new Point(-3, 4, 5);
     assert(transform.times(p).equals(new Point(-8, 7, 3)));
   });
 
   it("translation does not affect vectors", () => {
-    const transform = Matrix.translate(5, -3, 2);
+    const transform = Matrix.translation(5, -3, 2);
     const v = new Vector(-3, 4, 5);
     assert(transform.times(v).equals(v));
   });
 
   it("scaling a point", () => {
-    const transform = Matrix.scale(2, 3, 4);
+    const transform = Matrix.scaling(2, 3, 4);
     const p = new Point(-1, 2, 3);
     assert(transform.times(p).equals(new Point(-2, 6, 12)));
   });
 
   it("scaling a vector", () => {
-    const transform = Matrix.scale(2, 3, 4);
+    const transform = Matrix.scaling(2, 3, 4);
     const p = new Vector(-1, 2, 3);
     assert(transform.times(p).equals(new Vector(-2, 6, 12)));
   });
 
   it("inverse scaling", () => {
-    const transform = Matrix.scale(2, 3, 4).inverse();
+    const transform = Matrix.scaling(2, 3, 4).inverse();
     const p = new Vector(-4, 6, -8);
     assert(transform.times(p).equals(new Vector(-2, 2, -2)));
   });
 
   it("scaling by -1 is reflection", () => {
-    const transform = Matrix.scale(-1, 1, 1);
+    const transform = Matrix.scaling(-1, 1, 1);
     const p = new Point(-4, 2, 2);
     assert(transform.times(p).equals(new Point(4, 2, 2)));
   });
 
   it("rotates a point around the X axis", () => {
     const p = new Point(0, 1, 0);
-    const halfQuarter = Matrix.rotateX(Math.PI / 4); // 45 deg
-    const fullQuarter = Matrix.rotateX(Math.PI / 2); // 90 deg
+    const halfQuarter = Matrix.rotationX(Math.PI / 4); // 45 deg
+    const fullQuarter = Matrix.rotationX(Math.PI / 2); // 90 deg
     assert(halfQuarter.times(p).equals(new Point(0, sqrt2 / 2, sqrt2 / 2)));
     assert(fullQuarter.times(p).equals(new Point(0, 0, 1)));
     assert(fullQuarter.times(fullQuarter).times(p).equals(new Point(0, -1, 0)));
@@ -429,79 +429,79 @@ describe("Matrices", () => {
 
   it("inverse rotation on the X axis", () => {
     const p = new Point(0, 1, 0);
-    const halfQuarter = Matrix.rotateX(Math.PI / 4).inverse(); // -45 deg
+    const halfQuarter = Matrix.rotationX(Math.PI / 4).inverse(); // -45 deg
     assert(halfQuarter.times(p).equals(new Point(0, sqrt2 / 2, -sqrt2 / 2)));
   });
 
   it("rotates a point around the Y axis", () => {
     const p = new Point(0, 0, 1);
-    const halfQuarter = Matrix.rotateY(Math.PI / 4);
-    const fullQuarter = Matrix.rotateY(Math.PI / 2);
+    const halfQuarter = Matrix.rotationY(Math.PI / 4);
+    const fullQuarter = Matrix.rotationY(Math.PI / 2);
     assert(halfQuarter.times(p).equals(new Point(sqrt2 / 2, 0, sqrt2 / 2)));
     assert(fullQuarter.times(p).equals(new Point(1, 0, 0)));
   });
 
   it("inverse rotation on the Y axis", () => {
     const p = new Point(0, 0, 1);
-    const halfQuarter = Matrix.rotateY(Math.PI / 4).inverse();
+    const halfQuarter = Matrix.rotationY(Math.PI / 4).inverse();
     assert(halfQuarter.times(p).equals(new Point(-sqrt2 / 2, 0, sqrt2 / 2)));
   });
 
   it("rotates a point around the Z axis", () => {
     const p = new Point(0, 1, 0);
-    const halfQuarter = Matrix.rotateZ(Math.PI / 4);
-    const fullQuarter = Matrix.rotateZ(Math.PI / 2);
+    const halfQuarter = Matrix.rotationZ(Math.PI / 4);
+    const fullQuarter = Matrix.rotationZ(Math.PI / 2);
     assert(halfQuarter.times(p).equals(new Point(-sqrt2 / 2, sqrt2 / 2, 0)));
     assert(fullQuarter.times(p).equals(new Point(-1, 0, 0)));
   });
 
   it("inverse rotation around the Z axis", () => {
     const p = new Point(0, 1, 0);
-    const halfQuarter = Matrix.rotateZ(Math.PI / 4).inverse();
+    const halfQuarter = Matrix.rotationZ(Math.PI / 4).inverse();
     assert(halfQuarter.times(p).equals(new Point(sqrt2 / 2, sqrt2 / 2, 0)));
   });
 
   it("sharing moves x in proportion to y", () => {
     const p = new Point(2, 3, 4);
-    const shear = Matrix.shear(1, 0, 0, 0, 0, 0);
-    assert(shear.times(p).equals(new Point(2 + 3, 3, 4)));
+    const shearing = Matrix.shearing(1, 0, 0, 0, 0, 0);
+    assert(shearing.times(p).equals(new Point(2 + 3, 3, 4)));
   });
 
   it("sharing moves x in proportion to z", () => {
     const p = new Point(2, 3, 4);
-    const shear = Matrix.shear(0, 1, 0, 0, 0, 0);
-    assert(shear.times(p).equals(new Point(2 + 4, 3, 4)));
+    const shearing = Matrix.shearing(0, 1, 0, 0, 0, 0);
+    assert(shearing.times(p).equals(new Point(2 + 4, 3, 4)));
   });
 
   it("sharing moves y in proportion to x", () => {
     const p = new Point(2, 3, 4);
-    const shear = Matrix.shear(0, 0, 1, 0, 0, 0);
-    assert(shear.times(p).equals(new Point(2, 3 + 2, 4)));
+    const shearing = Matrix.shearing(0, 0, 1, 0, 0, 0);
+    assert(shearing.times(p).equals(new Point(2, 3 + 2, 4)));
   });
 
   it("sharing moves y in proportion to z", () => {
     const p = new Point(2, 3, 4);
-    const shear = Matrix.shear(0, 0, 0, 1, 0, 0);
-    assert(shear.times(p).equals(new Point(2, 3 + 4, 4)));
+    const shearing = Matrix.shearing(0, 0, 0, 1, 0, 0);
+    assert(shearing.times(p).equals(new Point(2, 3 + 4, 4)));
   });
 
   it("sharing moves z in proportion to x", () => {
     const p = new Point(2, 3, 4);
-    const shear = Matrix.shear(0, 0, 0, 0, 1, 0);
-    assert(shear.times(p).equals(new Point(2, 3, 4 + 2)));
+    const shearing = Matrix.shearing(0, 0, 0, 0, 1, 0);
+    assert(shearing.times(p).equals(new Point(2, 3, 4 + 2)));
   });
 
   it("sharing moves z in proportion to y", () => {
     const p = new Point(2, 3, 4);
-    const shear = Matrix.shear(0, 0, 0, 0, 0, 1);
-    assert(shear.times(p).equals(new Point(2, 3, 4 + 3)));
+    const shearing = Matrix.shearing(0, 0, 0, 0, 0, 1);
+    assert(shearing.times(p).equals(new Point(2, 3, 4 + 3)));
   });
 
   it("individual transformations applied in sequence", () => {
     const p = new Point(1, 0, 1);
-    const a = Matrix.rotateX(Math.PI / 2);
-    const b = Matrix.scale(5, 5, 5);
-    const c = Matrix.translate(10, 5, 7);
+    const a = Matrix.rotationX(Math.PI / 2);
+    const b = Matrix.scaling(5, 5, 5);
+    const c = Matrix.translation(10, 5, 7);
     // when
     const p2 = a.times(p);
     assert(p2.equals(new Point(1, -1, 0)));
@@ -515,12 +515,36 @@ describe("Matrices", () => {
 
   it("composed transformations applied", () => {
     const p = new Point(1, 0, 1);
-    const a = Matrix.rotateX(Math.PI / 2);
-    const b = Matrix.scale(5, 5, 5);
-    const c = Matrix.translate(10, 5, 7);
+    const a = Matrix.rotationX(Math.PI / 2);
+    const b = Matrix.scaling(5, 5, 5);
+    const c = Matrix.translation(10, 5, 7);
     // when (composition requires 'reverse' order of application)
     const t = c.times(b).times(a);
     // then
     assert(t.times(p).equals(new Point(15, 0, 7)));
+  });
+
+  it("fluent API for composing transformations", () => {
+    const p = new Point(1, 0, 1);
+    const t = Matrix.identity()
+      .rotateX(Math.PI / 2)
+      .scale(5, 5, 5)
+      .translate(10, 5, 7);
+    // when
+    const res = t.times(p);
+    // then
+    assert(res.equals(new Point(15, 0, 7)));
+  });
+
+  it("fluent API for composing transformations (the rest of the ops)", () => {
+    const p = new Point(1, 0, 1);
+    const t = Matrix.identity()
+      .rotateY(Math.PI / 2)
+      .rotateZ(Math.PI / 2)
+      .shear(1, 0, 0, 0, 0, 1);
+    // when
+    const res = t.times(p);
+    // then
+    assert(res.equals(new Point(1, 1, 0)));
   });
 });

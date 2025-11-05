@@ -28,7 +28,7 @@ export class Matrix {
     ]);
   }
 
-  static translate(x: N, y: N, z: N): Matrix {
+  static translation(x: N, y: N, z: N): Matrix {
     const m = this.identity();
     m.buf[0][3] = x;
     m.buf[1][3] = y;
@@ -36,7 +36,7 @@ export class Matrix {
     return m;
   }
 
-  static scale(x: N, y: N, z: N): Matrix {
+  static scaling(x: N, y: N, z: N): Matrix {
     const m = this.identity();
     m.buf[0][0] = x;
     m.buf[1][1] = y;
@@ -44,7 +44,7 @@ export class Matrix {
     return m;
   }
 
-  static rotateX(radians: N): Matrix {
+  static rotationX(radians: N): Matrix {
     const m = this.identity();
     m.buf[1][1] = Math.cos(radians);
     m.buf[2][2] = m.buf[1][1];
@@ -53,7 +53,7 @@ export class Matrix {
     return m;
   }
 
-  static rotateY(radians: N): Matrix {
+  static rotationY(radians: N): Matrix {
     const m = this.identity();
     m.buf[0][0] = Math.cos(radians);
     m.buf[2][2] = m.buf[0][0];
@@ -61,8 +61,7 @@ export class Matrix {
     m.buf[2][0] = -m.buf[0][2];
     return m;
   }
-
-  static rotateZ(radians: N): Matrix {
+  static rotationZ(radians: N): Matrix {
     const m = this.identity();
     m.buf[0][0] = Math.cos(radians);
     m.buf[1][1] = m.buf[0][0];
@@ -71,7 +70,7 @@ export class Matrix {
     return m;
   }
 
-  static shear(xy: N, xz: N, yx: N, yz: N, zx: N, zy: N): Matrix {
+  static shearing(xy: N, xz: N, yx: N, yz: N, zx: N, zy: N): Matrix {
     const m = this.identity();
     m.buf[0][1] = xy;
     m.buf[0][2] = xz;
@@ -81,6 +80,32 @@ export class Matrix {
     m.buf[2][1] = zy;
     return m;
   }
+
+  // FLUENT API
+  scale(x: N, y: N, z: N): Matrix {
+    return Matrix.scaling(x, y, z).times(this);
+  }
+
+  translate(x: N, y: N, z: N): Matrix {
+    return Matrix.translation(x, y, z).times(this);
+  }
+
+  rotateX(r: N): Matrix {
+    return Matrix.rotationX(r).times(this);
+  }
+
+  rotateY(r: N): Matrix {
+    return Matrix.rotationY(r).times(this);
+  }
+
+  rotateZ(r: N): Matrix {
+    return Matrix.rotationZ(r).times(this);
+  }
+
+  shear(xy: N, xz: N, yx: N, yz: N, zx: N, zy: N): Matrix {
+    return Matrix.shearing(xy, xz, yx, yz, zx, zy).times(this);
+  }
+  // END FLUENT API
 
   at(row: N, col: N): N {
     return this.buf[row][col];
