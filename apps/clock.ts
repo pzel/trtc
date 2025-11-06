@@ -1,7 +1,7 @@
-import { Point } from "./tuple.ts";
-import { Canvas } from "./canvas.ts";
-import { Color } from "./color.ts";
-import { Matrix } from "./matrix.ts";
+import { Point } from "../tuple.ts";
+import { Canvas } from "../canvas.ts";
+import { Color } from "../color.ts";
+import { Matrix } from "../matrix.ts";
 
 if (import.meta.main) {
   const w = 400, h = 400;

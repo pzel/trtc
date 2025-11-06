@@ -1,6 +1,6 @@
-import { Point, Vector } from "./tuple.ts";
-import { Canvas } from "./canvas.ts";
-import { Color } from "./color.ts";
+import { Point, Vector } from "../tuple.ts";
+import { Canvas } from "../canvas.ts";
+import { Color } from "../color.ts";
 
 type Projectile = { position: Point; velocity: Vector };
 type Env = { gravity: Vector; wind: Vector };
@@ -25,7 +25,7 @@ if (import.meta.main) {
   const point = new Color(1, 1, 1);
   while (proj.position.y > 0) {
     proj = tick(proj, env);
-    c.setPixelAt(
+    c.setAt(
       Math.round(proj.position.x),
       Math.round(c.height - proj.position.y),
       point,
