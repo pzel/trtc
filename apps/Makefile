@@ -1,22 +1,16 @@
-.PHONY: traj
-traj: trajectory.png
-	ristretto $^
+.PHONY: t c
 
-trajectory.ppm: trajectory.ts
-	deno run --allow-write="$@" ./$^
+t: trajectory.png
+	@ristretto $^ 2>/dev/null
 
-trajectory.png: trajectory.ppm
-	rm -f "$@"
-	ffmpeg -i "$^" "$@" 2>/dev/null
-
-.PHONY: c
 c: clock.png
-	ristretto $^
+	@ristretto $^ 2>/dev/null
 
-clock.ppm: clock.ts
+%.ppm: %.ts
+	rm -f "$@"
 	deno run --allow-write="$@" ./$^
 
-clock.png: clock.ppm
+%.png: %.ppm
 	rm -f "$@"
 	ffmpeg -i "$^" "$@" 2>/dev/null
 
