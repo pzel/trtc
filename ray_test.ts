@@ -7,6 +7,7 @@ import {
 } from "@std/assert";
 import { Ray } from "./ray.ts";
 import { Sphere } from "./sphere.ts";
+import { Matrix } from "./matrix.ts";
 import { Intersection, Intersections } from "./intersection.ts";
 import { Point, Vector } from "./tuple.ts";
 import { describe, it } from "@std/testing/bdd";
@@ -130,5 +131,18 @@ describe("Rays", () => {
     const i4 = new Intersection(2, s);
     const xs = new Intersections([i1, i2, i3, i4]);
     assertStrictEquals(xs.hit(), i4);
+  });
+
+  it("translates a ray", () => {
+    const r = new Ray(new Point(1, 2, 3), new Vector(0, 1, 0));
+    const r2 = r.transform(Matrix.translation(3, 4, 5));
+    assert(r2.origin.equals(new Point(4, 6, 8)));
+    assert(r2.direction.equals(new Vector(0, 1, 0)));
+  });
+
+  it("scales a ray", () => {
+    const r = new Ray(new Point(1, 2, 3), new Vector(0, 1, 0));
+    const r2 = r.transform(Matrix.scaling(2, 3, 4));
+    assert(r2.direction.equals(new Vector(0, 3, 0)), `${r2.direction}`);
   });
 });
