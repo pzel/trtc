@@ -10,7 +10,7 @@ if (import.meta.main) {
   const w = 400, h = 400;
   const c = new Canvas(w, h);
   //  const wallZ = 10;
-  const s = 80;
+  const s = 120;
 
   const sphere = new Sphere();
   sphere.transform = Matrix.scaling(s, s, s).translate(w / 2, h / 2, 0);
