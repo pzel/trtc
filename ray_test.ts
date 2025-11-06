@@ -3,12 +3,21 @@ import {
   assertAlmostEquals,
   assertEquals,
   assertStrictEquals,
+  fail,
 } from "@std/assert";
 import { Ray } from "./ray.ts";
 import { Sphere } from "./sphere.ts";
 import { Intersection, Intersections } from "./intersection.ts";
 import { Point, Vector } from "./tuple.ts";
 import { describe, it } from "@std/testing/bdd";
+
+function assertFloatEquals(actual: number | undefined, expected: number) {
+  if (typeof actual === "number") {
+    assertAlmostEquals(actual, expected, 0.00001);
+  } else {
+    fail(`Actual value was not present, expected: ${expected}`);
+  }
+}
 
 describe("Rays", () => {
   it("can be created and queried", () => {
@@ -32,10 +41,10 @@ describe("Rays", () => {
     const s = new Sphere();
     const xs = s.intersect(r);
     assertEquals(xs.length, 2);
-    assertAlmostEquals(xs.at(0).t, 4.0, 0.0001);
-    assertAlmostEquals(xs.at(1).t, 6.0, 0.0001);
-    assertStrictEquals(xs.at(0).object, s);
-    assertStrictEquals(xs.at(1).object, s);
+    assertFloatEquals(xs.at(0)?.t, 4.0);
+    assertFloatEquals(xs.at(1)?.t, 6.0);
+    assertStrictEquals(xs.at(0)?.object, s);
+    assertStrictEquals(xs.at(1)?.object, s);
   });
 
   it("intersects a sphere at a tangent", () => {
@@ -43,8 +52,8 @@ describe("Rays", () => {
     const s = new Sphere();
     const xs = s.intersect(r);
     assertEquals(xs.length, 2);
-    assertAlmostEquals(xs.at(0).t, 5.0, 0.0001);
-    assertAlmostEquals(xs.at(1).t, 5.0, 0.0001);
+    assertFloatEquals(xs.at(0)?.t, 5.0);
+    assertFloatEquals(xs.at(1)?.t, 5.0);
   });
 
   it("misses a sphere", () => {
@@ -58,8 +67,8 @@ describe("Rays", () => {
     const s = new Sphere();
     const xs = s.intersect(r);
     assertEquals(xs.length, 2);
-    assertAlmostEquals(xs.at(0).t, -1, 0.0001);
-    assertAlmostEquals(xs.at(1).t, 1, 0.0001);
+    assertFloatEquals(xs.at(-1)?.t, -1);
+    assertFloatEquals(xs.at(0)?.t, 1);
   });
 
   it("the sphere is behind the ray", () => {
@@ -67,14 +76,15 @@ describe("Rays", () => {
     const s = new Sphere();
     const xs = s.intersect(r);
     assertEquals(xs.length, 2);
-    assertAlmostEquals(xs.at(0).t, -6.0, 0.0001);
-    assertAlmostEquals(xs.at(1).t, -4.0, 0.0001);
+    // these are ordered from closest->furthest miss, mirroring the positives
+    assertFloatEquals(xs.at(-2)?.t, -6.0);
+    assertFloatEquals(xs.at(-1)?.t, -4.0);
   });
 
   it("an Intersection encapsulates the t and the object intersected", () => {
     const s = new Sphere();
     const i = new Intersection(3.5, s);
-    assertAlmostEquals(i.t, 3.5);
+    assertFloatEquals(i.t, 3.5);
     assertStrictEquals(i.object, s);
   });
 
@@ -84,7 +94,41 @@ describe("Rays", () => {
     const i2 = new Intersection(4, s);
     const is = new Intersections([i1, i2]);
     assertEquals(is.length, 2);
-    assertEquals(is.at(0).t, 3);
-    assertEquals(is.at(1).t, 4);
+    assertEquals(is.at(0)?.t, 3);
+    assertEquals(is.at(1)?.t, 4);
+  });
+
+  it("hit, when all intersections have positive t", () => {
+    const s = new Sphere();
+    const i1 = new Intersection(1, s);
+    const i2 = new Intersection(2, s);
+    const xs = new Intersections([i1, i2]);
+    assertStrictEquals(xs.hit(), i1);
+  });
+
+  it("hit, when some intersections have negative t", () => {
+    const s = new Sphere();
+    const i1 = new Intersection(-1, s);
+    const i2 = new Intersection(2, s);
+    const xs = new Intersections([i1, i2]);
+    assertStrictEquals(xs.hit(), i2);
+  });
+
+  it("hit, when all intersections have negative t", () => {
+    const s = new Sphere();
+    const i1 = new Intersection(-1, s);
+    const i2 = new Intersection(-2, s);
+    const xs = new Intersections([i1, i2]);
+    assertEquals(xs.hit(), null);
+  });
+
+  it("the hit is always the lowest nonnegative intersection", () => {
+    const s = new Sphere();
+    const i1 = new Intersection(5, s);
+    const i2 = new Intersection(7, s);
+    const i3 = new Intersection(-3, s);
+    const i4 = new Intersection(2, s);
+    const xs = new Intersections([i1, i2, i3, i4]);
+    assertStrictEquals(xs.hit(), i4);
   });
 });
