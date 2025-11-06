@@ -1,4 +1,7 @@
-.PHONY: t c
+.PHONY: t c s clean
+
+s: sphere.png
+	@ristretto $^ 2>/dev/null
 
 t: trajectory.png
 	@ristretto $^ 2>/dev/null
