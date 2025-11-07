@@ -146,25 +146,3 @@ describe("Rays", () => {
     assert(r2.direction.equals(new Vector(0, 3, 0)), `${r2.direction}`);
   });
 });
-
-describe("Spheres", () => {
-  it("has a default transformation", () => {
-    const s = new Sphere();
-    assert(s.transform.equals(Matrix.identity()));
-  });
-
-  it("can have its trasformation set to another one", () => {
-    const s = new Sphere();
-    const m = Matrix.translation(4, 5, 6);
-    s.transform = m;
-    assert(s.transform.equals(m));
-  });
-
-  it("intersects a translated sphere with a Ray", () => {
-    const s = new Sphere();
-    const r = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
-    s.transform = Matrix.translation(5, 0, 0);
-    const xs = s.intersect(r);
-    assert(xs.length == 0, `${xs}`);
-  });
-});

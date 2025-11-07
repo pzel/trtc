@@ -13,7 +13,11 @@ if (import.meta.main) {
   const s = 120;
 
   const sphere = new Sphere();
-  sphere.transform = Matrix.scaling(s, s, s).translate(w / 2, h / 2, 0);
+  sphere.transform = Matrix
+    .scaling(s, s, s)
+    .shear(0.5, 0, 0, 0, 0, 0)
+    .rotateX(Math.PI / 6)
+    .translate(w / 2, h / 2, 0);
   for (let i = 0; i < w; i++) {
     for (let j = 0; j < h; j++) {
       const r = new Ray(new Point(i, j, -10), new Vector(0, 0, 1));

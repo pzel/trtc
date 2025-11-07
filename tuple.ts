@@ -17,6 +17,9 @@ export class Tuple extends Float32Array {
   get w() {
     return this[3];
   }
+  set w(val: number) {
+    this[3] = val;
+  }
   get is_a_point(): boolean {
     return Math.round(this[3]) == 1;
   }
