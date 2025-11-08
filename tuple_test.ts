@@ -8,9 +8,7 @@ import {
 } from "@std/assert";
 import { EPSILON } from "./float.ts";
 import { Point, Tuple, Vector } from "./tuple.ts";
-
-const sqrt = Math.sqrt;
-const sqrt2 = Math.sqrt(2.0);
+import { sqrt, sqrt2 } from "./float.ts";
 
 describe("tuples.feature", () => {
   it("a tuple with w=1.0 is a point", () => {

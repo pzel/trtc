@@ -87,7 +87,7 @@ export class Tuple extends Float32Array {
         this.w * that,
       );
     } else {
-      throw new RangeError("N/A");
+      throw new RangeError(`Tuple.times not implemented for ${typeof that}`);
     }
   }
 
@@ -100,11 +100,19 @@ export class Tuple extends Float32Array {
     return new Tuple(this.x / m, this.y / m, this.z / m, this.w / m);
   }
 
-  cross(_: Tuple): Tuple {
-    throw new RangeError("N/A");
+  cross(that: Tuple): Tuple {
+    throw new RangeError(`Tuple.cross not implemented for ${typeof that}`);
   }
-  reflect(_: Tuple): Tuple {
-    throw new RangeError("N/A");
+
+  reflect(that: Tuple): Tuple {
+    // I don't understand why this happens, but the override from the Vector class
+    // doesn't get dispatched to...
+    if (that instanceof Vector) {
+      const d = that.dot(this as Tuple) * 2;
+      return this.minus(that.times(d)) as Vector;
+    } else {
+      throw new RangeError(`Tuple.reflect not implemented for ${typeof that}`);
+    }
   }
 }
 
@@ -112,6 +120,11 @@ export class Point extends Tuple {
   constructor(x: number, y: number, z: number) {
     super(x, y, z, 1.0);
   }
+
+  override negate(): Point {
+    throw new RangeError("no negating point");
+  }
+
   override plus(that: Tuple | Point): Tuple {
     if (that instanceof Point) {
       throw new RangeError("no overriding 2 points");
@@ -130,6 +143,15 @@ export class Vector extends Tuple {
   constructor(x: number, y: number, z: number) {
     super(x, y, z, 0.0);
   }
+
+  override negate(): Vector {
+    return new Vector(
+      -this.x,
+      -this.y,
+      -this.z,
+    );
+  }
+
   override cross(that: Vector): Vector {
     return new Vector(
       this.y * that.z - this.z * that.y,
@@ -147,7 +169,7 @@ export class Vector extends Tuple {
     );
   }
   override reflect(normal: Vector): Vector {
-    const d = normal.dot(this) * 2;
-    return this.minus(normal.times(d));
+    const d = normal.dot(this as Tuple) * 2;
+    return this.minus(normal.times(d)) as Vector;
   }
 }

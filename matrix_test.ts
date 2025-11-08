@@ -8,9 +8,7 @@ import {
 } from "@std/assert";
 import { Matrix } from "./matrix.ts";
 import { Point, Tuple, Vector } from "./tuple.ts";
-
-const sqrt = Math.sqrt;
-const sqrt2 = Math.sqrt(2);
+import { sqrt2 } from "./float.ts";
 
 describe("Matrices", () => {
   it("can construct and inspect a 4x4 matrix", () => {

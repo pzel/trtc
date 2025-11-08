@@ -2,13 +2,16 @@ import { Ray } from "./ray.ts";
 import { Point, Vector } from "./tuple.ts";
 import { Intersection, Intersections } from "./intersection.ts";
 import { Matrix } from "./matrix.ts";
+import { Material } from "./material.ts";
 
 export class Sphere {
   static center: Point = new Point(0, 0, 0);
   transform: Matrix;
+  material: Material;
 
   constructor() {
     this.transform = Matrix.identity();
+    this.material = new Material();
   }
 
   intersect(r0: Ray): Intersections {

@@ -2,6 +2,7 @@ import { assert, assertAlmostEquals, assertEquals } from "@std/assert";
 import { Ray } from "./ray.ts";
 import { Sphere } from "./sphere.ts";
 import { Matrix } from "./matrix.ts";
+import { Material } from "./material.ts";
 //import { Intersection, Intersections } from "./intersection.ts";
 import { Point, Vector } from "./tuple.ts";
 import { describe, it } from "@std/testing/bdd";
@@ -65,5 +66,18 @@ describe("Spheres", () => {
     s.transform = Matrix.rotationZ(Math.PI / 5).scale(1, 0.5, 1);
     const n = s.normalAt(new Point(0, Math.sqrt(2) / 2, -Math.sqrt(2) / 2));
     assert(n.equals(new Vector(0, 0.97014, -0.24254)), `${n}`);
+  });
+  it("has a default Material", () => {
+    const s = new Sphere();
+    assert(s.material.equals(new Material()), `${s.material}`);
+  });
+  it("can be assigned a different Material", () => {
+    const s = new Sphere();
+    const m = new Material();
+    m.diffuse = 0.8;
+    m.shininess = 100;
+    s.material = m;
+    assert(s.material.equals(m));
+    assertEquals(s.material.shininess, 100);
   });
 });

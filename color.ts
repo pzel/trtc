@@ -25,6 +25,7 @@ export class Color extends Tuple {
       );
     }
   }
+
   toRgb(): [number, number, number] {
     const clamp = (n: number) =>
       Math.round(Math.max(0, Math.min(255, n * 255)));
