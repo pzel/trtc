@@ -103,6 +103,9 @@ export class Tuple extends Float32Array {
   cross(_: Tuple): Tuple {
     throw new RangeError("N/A");
   }
+  reflect(_: Tuple): Tuple {
+    throw new RangeError("N/A");
+  }
 }
 
 export class Point extends Tuple {
@@ -142,5 +145,9 @@ export class Vector extends Tuple {
       this.z - that.z,
       this.w - that.w,
     );
+  }
+  override reflect(normal: Vector): Vector {
+    const d = normal.dot(this) * 2;
+    return this.minus(normal.times(d));
   }
 }

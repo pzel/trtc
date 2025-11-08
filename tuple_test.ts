@@ -10,6 +10,7 @@ import { EPSILON } from "./float.ts";
 import { Point, Tuple, Vector } from "./tuple.ts";
 
 const sqrt = Math.sqrt;
+const sqrt2 = Math.sqrt(2.0);
 
 describe("tuples.feature", () => {
   it("a tuple with w=1.0 is a point", () => {
@@ -255,5 +256,19 @@ describe("tuples.feature", () => {
     //then
     assert(ab.equals(new Vector(-1, 2, -1)));
     assert(ba.equals(new Vector(1, -2, 1)));
+  });
+
+  it("reflects a vector approaching at 45°", () => {
+    const v = new Vector(1, -1, 0);
+    const n = new Vector(0, 1, 0);
+    const res = v.reflect(n);
+    assert(res.equals(new Vector(1, 1, 0)), `${res}`);
+  });
+
+  it("reflects a vector off a slanted surface", () => {
+    const v = new Vector(0, -1, 0);
+    const n = new Vector(sqrt2 / 2, sqrt2 / 2, 0);
+    const res = v.reflect(n);
+    assert(res.equals(new Vector(1, 0, 0)), `${res}`);
   });
 });
