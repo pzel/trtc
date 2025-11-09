@@ -69,12 +69,9 @@ export class Tuple extends Float32Array {
 
   negate(): Tuple {
     if (this instanceof Point) throw new RangeError("no negating point");
-    return new Tuple(
-      -this.x,
-      -this.y,
-      -this.z,
-      -this.w,
-    );
+    else {
+      return Vector.prototype.negate.apply(this);
+    }
   }
 
   times(that: number | Tuple): Tuple {

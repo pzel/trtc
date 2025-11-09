@@ -2,6 +2,7 @@ import { Color } from "./color.ts";
 import { eq, sqrt, sqrt2 } from "./float.ts";
 import { PointLight } from "./light.ts";
 import { Point, Vector } from "./tuple.ts";
+import { assert } from "@std/assert";
 
 export class Material {
   static defaultColor = new Color(1, 1, 1);
@@ -41,6 +42,7 @@ export class Material {
     } else {
       diffuse = effectiveColor.times(this.diffuse).times(lightDotNormal);
       const lightNeg: Vector = (lightv as Vector).negate() as Vector;
+      assert(lightNeg instanceof Vector);
       const reflectv: Vector = lightNeg.reflect(normalv as Vector) as Vector;
       const reflectDotEye = reflectv.dot(eyev);
       if (reflectDotEye <= 0) {
@@ -50,6 +52,7 @@ export class Material {
         specular = light.intensity.times(this.specular).times(factor);
       }
     }
-    return ((ambient.plus(diffuse) as Color).plus(specular)) as Color;
+    const res = (ambient.plus(diffuse)).plus(specular);
+    return new Color(res[0], res[1], res[2]);
   }
 }

@@ -64,6 +64,7 @@ describe("Materials", () => {
     const normalv = new Vector(0, 0, -1);
     const light = new PointLight(new Point(0, 0, +10));
     const res: Color = m.lighting(light, position, eyev, normalv);
+    assert(res instanceof Color);
     assert(res.equals(new Color(0.1, 0.1, 0.1)), `${res}`);
   });
 });
