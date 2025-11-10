@@ -1,8 +1,10 @@
-import { PointLight } from "./light.ts";
-import { Sphere } from "./sphere.ts";
 import { Color } from "./color.ts";
-import { Point } from "./tuple.ts";
+import { Intersections } from "./intersection.ts";
+import { PointLight } from "./light.ts";
 import { Matrix } from "./matrix.ts";
+import { Ray } from "./ray.ts";
+import { Sphere } from "./sphere.ts";
+import { Point } from "./tuple.ts";
 
 export class World {
   constructor(
@@ -21,5 +23,12 @@ export class World {
     const l = new PointLight(new Point(-10, 10, -10));
     const w = new World([s1, s2], l);
     return w;
+  }
+
+  intersect(r: Ray): Intersections {
+    return this.objects.reduce(
+      (acc, obj) => acc.merge(obj.intersect(r)),
+      new Intersections([]),
+    );
   }
 }

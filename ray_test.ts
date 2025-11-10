@@ -1,24 +1,17 @@
 import {
   assert,
-  assertAlmostEquals,
   assertEquals,
+  assertFloatEquals,
   assertStrictEquals,
-  fail,
-} from "@std/assert";
+  describe,
+  it,
+} from "./testing.ts";
+
 import { Ray } from "./ray.ts";
 import { Sphere } from "./sphere.ts";
 import { Matrix } from "./matrix.ts";
 import { Intersection, Intersections } from "./intersection.ts";
 import { Point, Vector } from "./tuple.ts";
-import { describe, it } from "@std/testing/bdd";
-
-function assertFloatEquals(actual: number | undefined, expected: number) {
-  if (typeof actual === "number") {
-    assertAlmostEquals(actual, expected, 0.00001);
-  } else {
-    fail(`Actual value was not present, expected: ${expected}`);
-  }
-}
 
 describe("Rays", () => {
   it("can be created and queried", () => {
@@ -42,10 +35,12 @@ describe("Rays", () => {
     const s = new Sphere();
     const xs = s.intersect(r);
     assertEquals(xs.length, 2);
-    assertFloatEquals(xs.at(0)?.t, 4.0);
-    assertFloatEquals(xs.at(1)?.t, 6.0);
-    assertStrictEquals(xs.at(0)?.object, s);
-    assertStrictEquals(xs.at(1)?.object, s);
+    const first = xs.pop();
+    assertFloatEquals(first?.t, 4.0);
+    assertStrictEquals(first?.object, s);
+    const second = xs.pop();
+    assertFloatEquals(second?.t, 6.0);
+    assertStrictEquals(second?.object, s);
   });
 
   it("intersects a sphere at a tangent", () => {
@@ -53,8 +48,8 @@ describe("Rays", () => {
     const s = new Sphere();
     const xs = s.intersect(r);
     assertEquals(xs.length, 2);
-    assertFloatEquals(xs.at(0)?.t, 5.0);
-    assertFloatEquals(xs.at(1)?.t, 5.0);
+    assertFloatEquals(xs.pop()?.t, 5.0);
+    assertFloatEquals(xs.pop()?.t, 5.0);
   });
 
   it("misses a sphere", () => {
@@ -68,8 +63,8 @@ describe("Rays", () => {
     const s = new Sphere();
     const xs = s.intersect(r);
     assertEquals(xs.length, 2);
-    assertFloatEquals(xs.at(-1)?.t, -1);
-    assertFloatEquals(xs.at(0)?.t, 1);
+    assertFloatEquals(xs.pop()?.t, 1);
+    assertFloatEquals(xs.popNegative()?.t, -1);
   });
 
   it("the sphere is behind the ray", () => {
@@ -78,8 +73,8 @@ describe("Rays", () => {
     const xs = s.intersect(r);
     assertEquals(xs.length, 2);
     // these are ordered from closest->furthest miss, mirroring the positives
-    assertFloatEquals(xs.at(-2)?.t, -6.0);
-    assertFloatEquals(xs.at(-1)?.t, -4.0);
+    assertFloatEquals(xs.popNegative()?.t, -4.0);
+    assertFloatEquals(xs.popNegative()?.t, -6.0);
   });
 
   it("an Intersection encapsulates the t and the object intersected", () => {
@@ -95,8 +90,8 @@ describe("Rays", () => {
     const i2 = new Intersection(4, s);
     const is = new Intersections([i1, i2]);
     assertEquals(is.length, 2);
-    assertEquals(is.at(0)?.t, 3);
-    assertEquals(is.at(1)?.t, 4);
+    assertEquals(is.pop()?.t, 3);
+    assertEquals(is.pop()?.t, 4);
   });
 
   it("hit, when all intersections have positive t", () => {
@@ -131,6 +126,22 @@ describe("Rays", () => {
     const i4 = new Intersection(2, s);
     const xs = new Intersections([i1, i2, i3, i4]);
     assertStrictEquals(xs.hit(), i4);
+  });
+
+  it("Intersections can be merged, preserving the hit property", () => {
+    const s = new Sphere();
+    const i1 = new Intersection(5, s);
+    const i2 = new Intersection(7, s);
+
+    const j1 = new Intersection(-3, s);
+    const j2 = new Intersection(2, s);
+    const is = new Intersections([i1, i2]);
+    const js = new Intersections([j1, j2]);
+    assertStrictEquals(is.hit(), i1);
+    assertStrictEquals(js.hit(), j2);
+
+    const merged1 = is.merge(js);
+    assertStrictEquals(merged1.hit(), j2);
   });
 
   it("translates a ray", () => {

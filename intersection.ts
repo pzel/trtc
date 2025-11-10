@@ -27,18 +27,32 @@ export class Intersections {
     return this.negatives.length + this.nonNegatives.length;
   }
 
-  at(idx: number): Intersection | null {
-    //IDK if this is a good api
-    if (idx >= 0) {
-      return this.nonNegatives.toArray()[idx] || null;
-    } else {
-      return this.negatives.toArray()[-(idx + 1)] || null;
-    }
-  }
-
   hit(): Intersection | null {
     return this.nonNegatives.isEmpty()
       ? null
       : this.nonNegatives.peek() as Intersection;
+  }
+
+  pop(): Intersection | null {
+    return this.nonNegatives.isEmpty()
+      ? null
+      : this.nonNegatives.pop() as Intersection;
+  }
+
+  popNegative(): Intersection | null {
+    return this.negatives.isEmpty()
+      ? null
+      : this.negatives.pop() as Intersection;
+  }
+
+  merge(that: Intersections): Intersections {
+    const res = new Intersections([]);
+    const negatives = BinaryHeap.from(this.negatives);
+    const nonNegatives = BinaryHeap.from(this.nonNegatives);
+    negatives.push(...that.negatives.toArray());
+    nonNegatives.push(...that.nonNegatives.toArray());
+    res.negatives = negatives;
+    res.nonNegatives = nonNegatives;
+    return res;
   }
 }
