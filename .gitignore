@@ -2,3 +2,9 @@
 *.dat
 *.png
 *.ppm
+*.o
+
+# executables
+a.out
+test
+tracer
