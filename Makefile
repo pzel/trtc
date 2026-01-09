@@ -1,7 +1,7 @@
 CC := tcc
 .PHONY: build clean test unit
 
-test: tracer.c feq.o
+test: tracer.o feq.o test.c
 	$(CC) $^ -lm -DTEST -o $@ && ./$@
 
 clean:
