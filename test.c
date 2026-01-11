@@ -2,17 +2,19 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>
-#include "tracer.h";
+#include "tracer.h"
 #include "feq.h"
 
 #define test(what) (printf("\t%s\n", what));
 #define POOL_SIZE 1000
 
-struct tuple buf[POOL_SIZE];
+struct tuple tuple_buf[POOL_SIZE];
+struct color color_buf[POOL_SIZE];
 
 int main() {
   int offset = 0;
-  struct pool pool = mk_pool(buf, 1000);
+  struct tuple_pool pool = mk_tuple_pool(tuple_buf, POOL_SIZE);
+  struct color_pool cpool = mk_color_pool(color_buf, POOL_SIZE);
 
   test("a tuple with w=1.0 is a point") {
     // given
@@ -153,7 +155,70 @@ int main() {
     assert(feq(vector_magnitude(*res), 1.0));
   }
 
+  test("dot product of two tuples") {
+    // given
+    struct tuple a = {1, 2, 3, 0};
+    struct tuple b = {2, 3, 4, 0};
+    // then
+    assert(feq(dot(a, b), 20.0));
+  }
 
+  test("cross product of two tuples") {
+    // given
+    struct tuple a = {1, 2, 3, 0};
+    struct tuple b = {2, 3, 4, 0};
+    // when
+    struct tuple *res1 = cross(&pool,a,b);
+    struct tuple *res2 = cross(&pool,b,a);
+    // then
+    struct tuple exp1 = {-1, 2, -1, 0};
+    struct tuple exp2 = { 1, -2, 1, 0};
+    assert(tuple_eq(*res1, exp1));
+    assert(tuple_eq(*res2, exp2));
+  }
+
+ test("colors can be added") {
+   // given
+   struct color c1 = {.r = 0.9, .g = 0.6, .b = 0.75 };
+   struct color c2 = {.r = 0.7, .g = 0.1, .b = 0.25 };
+   // when
+   struct color *res = color_add(&cpool, c1, c2);
+   // then
+   struct color exp = {1.6, 0.7, 1.0};
+   assert(color_eq(*res, exp));
+ }
+
+ test("colors can be subtracted") {
+   // given
+   struct color c1 = {.r = 0.9, .g = 0.6, .b = 0.75 };
+   struct color c2 = {.r = 0.7, .g = 0.1, .b = 0.25 };
+   // when
+   struct color *res = color_sub(&cpool, c1, c2);
+   // then
+   struct color exp = {0.2, 0.5, 0.5};
+   assert(color_eq(*res, exp));
+ }
+
+ test("colors can be multiplied by a scalar") {
+   // given
+   struct color c1 = {.r = 0.2, .g = 0.3, .b = 0.4 };
+   // when
+   struct color *res = color_mul(&cpool, c1, 2);
+   // then
+   struct color exp = {0.4, 0.6, 0.8};
+   assert(color_eq(*res, exp));
+ }
+
+ test("colors can be multiplied together") {
+   // given
+   struct color c1 = {.r = 1, .g = 0.2, .b = 0.4 };
+   struct color c2 = {.r = 0.9, .g = 1, .b = 0.1 };
+   // when
+   struct color *res = color_hadamard(&cpool, c1, c2);
+   // then
+   struct color exp = {0.9, 0.2, 0.04};
+   assert(color_eq(*res, exp));
+ }
 
 
   /*
