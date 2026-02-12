@@ -220,6 +220,27 @@ int main() {
    assert(color_eq(*res, exp));
  }
 
+ test("a canvas can be created") {
+   int width, height;
+   width = 2;
+   height = 2;
+   struct color exp = {0.9, 0.2, 0.04};
+   struct color *current_pixel;
+   // when
+   struct canvas res = mk_canvas(&cpool, width, height);
+   // then
+   assert(res.width == width);
+   assert(res.height == height);
+
+   for (int i = 0; i< width; i++) {
+     for (int j = 0; j< height; j++) {
+       current_pixel = pixel_at(res, i,j);
+       printf("%x: %d,%d", current_pixel, i, j);
+       color_print(*current_pixel);
+     }
+   }
+ }
+
 
   /*
   test("mk_vector() will crash if pool is exhausted") {

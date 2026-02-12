@@ -59,6 +59,28 @@ cross(struct tuple_pool *p, struct tuple t1, struct tuple t2) {
                    t1.x * t2.y - t1.y * t2.x);
 }
 
+struct canvas
+mk_canvas(struct color_pool *cpool, int width, int height) {
+  /* We won't use pools for canvases, since there's usually just one in a
+     given program */
+  int size = width * height;
+  struct color *start = malloc(size);
+  struct color *current = start;
+  for (int i = 0; i < size; i++) {
+    printf("Start %x, Current %x (size: %d)\n", start, current, size);
+    *current = *mk_color(cpool, i+1,i+1,i+1);
+    color_print(*current);
+    current++;
+  }
+  struct canvas result = {.width = width, .height = height, .pixels = start};
+  return result;
+}
+
+struct color *
+pixel_at(struct canvas canvas, int x, int y) {
+  struct color *offset = (canvas.pixels)+(canvas.width*y+x);
+  return offset;
+}
 
 struct tuple_pool
 mk_tuple_pool(struct tuple *arr, int size) {
@@ -67,7 +89,7 @@ mk_tuple_pool(struct tuple *arr, int size) {
 }
 
 struct color_pool
-mk_color_pool(struct tuple *arr, int size) {
+mk_color_pool(struct color *arr, int size) {
   struct color_pool p = {.max=size, .count=0, .next=arr};
   return p;
 }

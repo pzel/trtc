@@ -1,8 +1,8 @@
-CC := tcc
+CC := tcc -Wall
 .PHONY: build clean test unit
 
 test: tracer.o feq.o test.c
-	$(CC) $^ -lm -DTEST -o $@ && ./$@
+	$(CC) -Wall $^ -lm -DTEST -o $@ && ./$@
 
 clean:
 	rm -f *.o
