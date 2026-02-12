@@ -35,7 +35,7 @@ describe("World", () => {
 
   it("can intersect a world with a ray", () => {
     const w = World.default();
-    const r = new Ray(new Point(0,0,-5), new Vector(0,0,1));
+    const r = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
     const xs: Intersections = w.intersect(r);
     assertEquals(xs.length, 4);
     assertFloatEquals(xs.pop()?.t, 4);
@@ -43,5 +43,4 @@ describe("World", () => {
     assertFloatEquals(xs.pop()?.t, 5.5);
     assertFloatEquals(xs.pop()?.t, 6);
   });
-
 });
